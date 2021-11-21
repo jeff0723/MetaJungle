@@ -1,0 +1,21 @@
+{
+  "name": "@bulls-and-bears/monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "react-app:build": "yarn workspace @bulls-and-bears/react-app build",
+    "react-app:eject": "yarn workspace @bulls-and-bears/react-app eject",
+    "react-app:start": "yarn workspace @bulls-and-bears/react-app start",
+    "react-app:test": "yarn workspace @bulls-and-bears/react-app test",
+    "start": "yarn workspace @bulls-and-bears/react-app start",
+    "compile": "yarn workspace @bulls-and-bears/hardhat compile",
+    "node": "yarn workspace @bulls-and-bears/hardhat node",
+    "test": "yarn workspace @bulls-and-bears/hardhat test",
+    "deploy":"yarn workspace @bulls-and-bears/hardhat deploy",
+    "coverage":"yarn workspace @bulls-and-bears/hardhat coverage",
+    "etherscan-verify":"yarn workspace @bulls-and-bears/hardhat etherscan-verify"
+  }
+}
