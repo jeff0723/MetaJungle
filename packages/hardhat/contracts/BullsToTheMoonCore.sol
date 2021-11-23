@@ -3,8 +3,8 @@ pragma solidity ^0.8.4;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./BullsToTheMoonInterface.sol";
-import "./MagicGrass.sol";
 
 /// @notice ENS registry to get chainlink resolver
 interface ENS {
@@ -25,7 +25,7 @@ abstract contract BullsToTheMoonCore is
     ERC721Enumerable
 {
     /// @dev MagicGrass interface
-    IMagicGrass private _magicGrass;
+    IERC20 private _magicGrass;
 
     /// @notice On-chain storage of bulls' state
     mapping(uint256 => BullState) public bullStateOf;
@@ -142,6 +142,6 @@ abstract contract BullsToTheMoonCore is
         _burn(bullId);
 
         // reward the reporter
-        _magicGrass.transfer(_msgSender(), 100e18);
+        _magicGrass.transfer(_msgSender(), 1000e18);
     }
 }
