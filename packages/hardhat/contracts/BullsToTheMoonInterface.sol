@@ -6,16 +6,15 @@ pragma solidity ^0.8.4;
  * @author Justa Liang
  */
 interface BullsToTheMoonInterface {
-    /**
-     * @notice Breed a bull
-     * @param namehash ENS-namehash of given pair
-     * @return ID of the new bull
-     */
-    function breed(bytes32 namehash) external returns (uint256);
-
     //-------------------------
     // Core
     //-------------------------
+
+    /**
+     * @notice Breed a bull
+     * @return ID of the new bull
+     */
+    function breed() external returns (uint256);
 
     /**
      * @notice Core: Open a long position with leverage
@@ -37,21 +36,15 @@ interface BullsToTheMoonInterface {
     function report(uint256 bullId) external;
 
     //-------------------------
-    // Field
+    // Fields
     //-------------------------
 
     /**
-     * @notice Field: Occupy certain field
+     * @notice Fields: Occupy certain field
      * @param bullId ID of the bull
      * @param fieldId ID of the field on grassland
      */
     function occupy(uint256 bullId, uint256 fieldId) external;
-
-    /**
-     * @notice Field: Harvest the MagicGrass on certain field
-     * @param fieldId ID of the field on grassland
-     */
-    function harvest(uint256 fieldId) external;
 
     //-------------------------
     // Governance

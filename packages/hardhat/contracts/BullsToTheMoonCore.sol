@@ -39,16 +39,6 @@ abstract contract BullsToTheMoonCore is
         int256 netWorth; // net worth of the bull
     }
 
-    /// @dev Event when bull state changes
-    event BullInfo(
-        uint256 indexed id,
-        address indexed proxy,
-        bool indexed closed,
-        int256 openPrice,
-        int8 leverage,
-        int256 netWorth
-    );
-
     /// @dev Check bull's owner
     modifier checkOwner(uint256 bullId) {
         require(_isApprovedOrOwner(msg.sender, bullId), "not owner");
@@ -75,16 +65,6 @@ abstract contract BullsToTheMoonCore is
         target.openPrice = currPrice;
         target.closed = false;
         target.leverage = leverage;
-
-        // emit bull info
-        emit BullInfo(
-            bullId,
-            target.proxy,
-            false,
-            currPrice,
-            leverage,
-            target.netWorth
-        );
     }
 
     /**
@@ -108,16 +88,6 @@ abstract contract BullsToTheMoonCore is
             1000;
         require(target.netWorth >= 0, "run out of margin");
         target.closed = true;
-
-        // emit bull state
-        emit BullInfo(
-            bullId,
-            target.proxy,
-            true,
-            currPrice,
-            target.leverage,
-            target.netWorth
-        );
     }
 
     function report(uint256 bullId) external override {
