@@ -8,26 +8,24 @@ pragma solidity ^0.8.4;
 interface BullsToTheMoonInterface {
     /**
      * @notice Breed a bull
-     * @param namehash ENS-namehash of given pair (ex: eth-usd.data.eth => 0xf599f4cd075a34b92169cf57271da65a7a936c35e3f31e854447fbb3e7eb736d)
+     * @param namehash ENS-namehash of given pair
      * @return ID of the new bull
      */
     function breed(bytes32 namehash) external returns (uint256);
 
-    /**
-     *-------------------------
-     * Core
-     *-------------------------
-     */
+    //-------------------------
+    // Core
+    //-------------------------
 
     /**
      * @notice Core: Open a long position with leverage
      * @param bullId ID of the bull
      * @param leverage Perpetual leverage
      */
-    function open(uint256 bullId, uint256 leverage) external;
+    function open(uint256 bullId, int8 leverage) external;
 
     /**
-     * @notice Core: Close the position and update its property
+     * @notice Core: Close the position and update its net worth
      * @param bullId ID of the bull
      */
     function close(uint256 bullId) external;
@@ -38,17 +36,9 @@ interface BullsToTheMoonInterface {
      */
     function report(uint256 bullId) external;
 
-    /**
-     * @notice Core: Liberate a bull and release its property
-     * @param bullId ID of the bull
-     */
-    function liberate(uint256 bullId) external;
-
-    /**
-     *-------------------------
-     * Field
-     *-------------------------
-     */
+    //-------------------------
+    // Field
+    //-------------------------
 
     /**
      * @notice Field: Occupy certain field
@@ -63,11 +53,9 @@ interface BullsToTheMoonInterface {
      */
     function harvest(uint256 fieldId) external;
 
-    /**
-     *-------------------------
-     * Governance
-     *-------------------------
-     */
+    //-------------------------
+    // Governance
+    //-------------------------
 
     /**
      * @notice Governance: Propose the next-generation skin
