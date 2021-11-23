@@ -1,72 +1,94 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-
 /**
  * @title Bulls (dynamic NFTs) that grow with rising price
  * @author Justa Liang
  */
 interface BullsToTheMoonInterface {
-
     /**
      * @notice Breed a bull
-     * @param namehash ENS-namehash of given pair (ex: eth-usd.data.eth => 0xf599f4cd075a34b92169cf57271da65a7a936c35e3f31e854447fbb3e7eb736d) 
+     * @param namehash ENS-namehash of given pair (ex: eth-usd.data.eth => 0xf599f4cd075a34b92169cf57271da65a7a936c35e3f31e854447fbb3e7eb736d)
      * @return ID of the new bull
      */
-    function breed(bytes32 namehash) external returns (uint);
+    function breed(bytes32 namehash) external returns (uint256);
 
     /**
-     * @notice Open a long position and update latest price of certain bull
+     *-------------------------
+     * Core
+     *-------------------------
+     */
+
+    /**
+     * @notice Core: Open a long position with leverage
+     * @param bullId ID of the bull
+     * @param leverage Perpetual leverage
+     */
+    function open(uint256 bullId, uint256 leverage) external;
+
+    /**
+     * @notice Core: Close the position and update its property
      * @param bullId ID of the bull
      */
-    function open(uint bullId) external;
+    function close(uint256 bullId) external;
 
     /**
-     * @notice Close the position and compute ROI of certain bull
+     * @notice Core: Report a bull ran out of margin
      * @param bullId ID of the bull
      */
-    function close(uint bullId) external;
+    function report(uint256 bullId) external;
 
     /**
-     * @notice Regret opening position when price drop after
+     * @notice Core: Liberate a bull and release its property
      * @param bullId ID of the bull
      */
-    function regretOpen(uint bullId) external;
+    function liberate(uint256 bullId) external;
 
     /**
-     * @notice Regret closing position when price rise after
-     * @param bullId ID of the bull
+     *-------------------------
+     * Field
+     *-------------------------
      */
-    function regretClose(uint bullId) external;
 
     /**
-     * @notice Occupy certain field with certain bull to earn GrassForBulls (ERC20-token)
+     * @notice Field: Occupy certain field
      * @param bullId ID of the bull
      * @param fieldId ID of the field on grassland
      */
-    function occupy(uint bullId, uint fieldId) external;
+    function occupy(uint256 bullId, uint256 fieldId) external;
 
     /**
-     * @notice Propose the next-generation skin
+     * @notice Field: Harvest the MagicGrass on certain field
+     * @param fieldId ID of the field on grassland
+     */
+    function harvest(uint256 fieldId) external;
+
+    /**
+     *-------------------------
+     * Governance
+     *-------------------------
+     */
+
+    /**
+     * @notice Governance: Propose the next-generation skin
      * @param proposedBaseURI Base URI of proposer's designed NFTs
      */
     function propose(string memory proposedBaseURI) external;
 
     /**
-     * @notice Start the vote
+     * @notice Governance: Vote the proposals using owned fields
+     * @param proposalId ID of the proposal
+     * @param fieldCount Number of owned field
+     */
+    function vote(uint256 proposalId, uint256 fieldCount) external;
+
+    /**
+     * @notice Governance: Start the vote
      */
     function startVote() external;
 
     /**
-     * @notice Vote the proposals using owned field
-     * @param proposalId ID of the proposal
-     * @param fieldCount Number of owned field
-     */
-    function vote(uint proposalId, uint fieldCount) external;
-
-    /**
-     * @notice End the vote
+     * @notice Governance: End the vote
      */
     function endVote() external;
 }
