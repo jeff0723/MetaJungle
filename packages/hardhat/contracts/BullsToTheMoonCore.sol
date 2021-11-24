@@ -25,8 +25,10 @@ abstract contract BullsToTheMoonCore is
     BullsToTheMoonInterface,
     ERC721Enumerable
 {
-    /// @dev Current generation
-    uint32 private _generation;
+    /**
+     * @notice Generation of bulls
+     */
+    uint32 public generation;
 
     /// @dev ENS interface
     ENS private _ens;
@@ -35,11 +37,22 @@ abstract contract BullsToTheMoonCore is
     IERC20 internal _magicGrass;
 
     /// @dev Map from bull ID to on-chain data
-    mapping(uint256 => BullData) private _bullData;
+    mapping(uint256 => BullData) internal _bullData;
+    struct BullData {
+        // state
+        uint32 generation; // the generation in which the bull bred
+        bool closed; // position closed or not
+        bool onField; // on the field or not
+        int256 netWorth; // net worth of the bull
+        // position
+        address proxy; // proxy of Chainlink price feed
+        int256 openPrice; // price when opening position
+        int8 leverage; // leverage when opening position
+    }
 
-    /// @dev Setup ENS registry and deploy MagicGrass
+    /// @dev Initialize generation, setup ENS registry and deploy MagicGrass
     constructor(address ensRegistryAddr) {
-        _generation = 1;
+        generation = 1;
         _ens = ENS(ensRegistryAddr);
         _magicGrass = IERC20(new MagicGrass(_msgSender()));
     }
@@ -51,18 +64,22 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @dev see {BullsToTheMoonInterface-breed}
+     * @notice see {BullsToTheMoonInterface-breed}
      */
     function breed() external override returns (uint256) {
+        // cost 1000 MagicGrass
         _magicGrass.transferFrom(_msgSender(), address(this), 1000e18);
+
+        // mint token
         uint256 newId = totalSupply() + 1;
         _safeMint(_msgSender(), newId);
+
+        // allocate data
         _bullData[newId] = BullData(
-            // state
-            _generation,
+            generation,
             true,
+            false,
             1000,
-            // position
             address(0),
             0,
             0
@@ -71,7 +88,7 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @dev See {BullsToTheMoonInterface-open}.
+     * @notice See {BullsToTheMoonInterface-open}.
      */
     function open(
         uint256 bullId,
@@ -100,7 +117,7 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @dev See {BullsToTheMoonInterface-close}.
+     * @notice See {BullsToTheMoonInterface-close}.
      */
     function close(uint256 bullId) external override checkOwner(bullId) {
         BullData storage target = _bullData[bullId];
@@ -123,7 +140,7 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @dev See {BullsToTheMoonInterface-report}.
+     * @notice See {BullsToTheMoonInterface-report}.
      */
     function report(uint256 bullId) external override {
         BullData storage target = _bullData[bullId];
@@ -151,21 +168,9 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @dev see {BullsToTheMoonInterface-generation}
+     * @notice Return bull data given bull ID
      */
-    function generation() public view override returns (uint32) {
-        return _generation;
-    }
-
-    /**
-     * @dev see {BullsToTheMoonInterface-getData}
-     */
-    function getBullData(uint256 bullId)
-        public
-        view
-        override
-        returns (BullData memory)
-    {
+    function getBullData(uint256 bullId) public view returns (BullData memory) {
         require(_exists(bullId), "query for nonexistent bull");
         return _bullData[bullId];
     }

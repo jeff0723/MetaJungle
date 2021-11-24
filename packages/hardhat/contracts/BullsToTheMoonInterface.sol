@@ -1,18 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-/// @dev Bull data structure
-struct BullData {
-    // state
-    uint32 generation; // the generation in which the bull bred
-    bool closed; // position closed or not
-    int256 netWorth; // net worth of the bull
-    // position
-    address proxy; // proxy of Chainlink price feed
-    int256 openPrice; // price when opening position
-    int8 leverage; // leverage when opening position
-}
-
 /**
  * @title Bulls (dynamic NFTs) that grow with rising price
  * @author Justa Liang
@@ -52,22 +40,6 @@ interface BullsToTheMoonInterface {
      */
     function report(uint256 bullId) external;
 
-    /**
-     * @notice Core: Get current generation
-     * @return Current generation
-     */
-    function generation() external view returns (uint32);
-
-    /**
-     * @notice Core: Check bull state
-     * @param bullId ID of the bull
-     * @return Bull data structure
-     */
-    function getBullData(uint256 bullId)
-        external
-        view
-        returns (BullData memory);
-
     //-------------------------
     // Fields
     //-------------------------
@@ -79,29 +51,23 @@ interface BullsToTheMoonInterface {
      */
     function occupy(uint256 bullId, uint8 fieldId) external;
 
-    /**
-     * @notice Fields: Get bull ID on certain field
-     * @param fieldId ID of the field on grassland
-     * @return ID of the bull on the field
-     */
-    function getBullOnField(uint8 fieldId) external returns (uint256);
-
     //-------------------------
     // Governance
     //-------------------------
 
     /**
      * @notice Governance: Propose the next-generation skin
-     * @param proposedBaseURI Base URI of proposer's designed NFTs
+     * @param newBaseURI Base URI of proposer's designed NFTs
+     * @param slotId Which slot to propose
      */
-    function propose(string memory proposedBaseURI) external;
+    function propose(string calldata newBaseURI, uint8 slotId) external payable;
 
     /**
      * @notice Governance: Vote the proposals using owned fields
      * @param proposalId ID of the proposal
-     * @param fieldCount Number of owned field
+     * @param fieldIdList List of field ID that voter occupied
      */
-    function vote(uint256 proposalId, uint256 fieldCount) external;
+    function vote(uint256 proposalId, uint8[] calldata fieldIdList) external;
 
     /**
      * @notice Governance: Start the vote
