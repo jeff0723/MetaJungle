@@ -1,16 +1,25 @@
-import {HardhatRuntimeEnvironment} from 'hardhat/types';
-import {DeployFunction} from 'hardhat-deploy/types';
-import { ethers } from 'hardhat';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { DeployFunction } from 'hardhat-deploy/types';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-    const { deploy } = hre.deployments;
-    const deployer = (await hre.getUnnamedAccounts())[0];
+    const { deploy, get } = hre.deployments;
+    const { deployer } = await hre.getNamedAccounts();
+    const chainId = await hre.getChainId();
 
-    // the following will only deploy "GenericMetaTxProcessor" if the contract was never deployed or if the code changed since last deployment
+    const ensRegistryAddr = 
+        chainId === '1337' ?
+            (await get("MockEnsRegistry")).address:
+            "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+
+    // deploy
     await deploy("BullsToTheMoon", {
         from: deployer,
-        // gas: 4000000,
-        args: [ethers.constants.AddressZero],
+        args: [
+            ensRegistryAddr, 
+            "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/",
+            [deployer],
+            [1]
+        ],
     });
 };
 export default func;
