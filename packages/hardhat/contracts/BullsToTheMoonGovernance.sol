@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 
 import "./BullsToTheMoonFields.sol";
 
+/**
+ * @title Governance of bull community
+ * @author Justa Liang
+ */
 abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
     /// @dev Max number of proposals
     uint8 private constant SLOT_SIZE = 10;
