@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.0;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -25,39 +25,23 @@ abstract contract BullsToTheMoonCore is
     BullsToTheMoonInterface,
     ERC721Enumerable
 {
-    /// @dev ID counter
-    uint256 private _counter;
+    /// @dev Current generation
+    uint32 private _generation;
 
     /// @dev ENS interface
     ENS private _ens;
 
     /// @dev MagicGrass interface
-    IERC20 private _magicGrass;
+    IERC20 internal _magicGrass;
 
-    /// @notice On-chain storage of bulls' state
-    mapping(uint256 => BullState) public bullStateOf;
-
-    /// @notice Current generation
-    uint32 public generation;
-
-    /// @dev Bull info structure
-    struct BullState {
-        // state
-        uint32 generation; // the generation in which the bull bred
-        bool closed; // position closed or not
-        int256 netWorth; // net worth of the bull
-        // position
-        address proxy; // proxy of Chainlink price feed
-        int256 openPrice; // price when opening position
-        int8 leverage; // leverage when opening position
-    }
+    /// @dev Map from bull ID to on-chain data
+    mapping(uint256 => BullData) private _bullData;
 
     /// @dev Setup ENS registry and deploy MagicGrass
     constructor(address ensRegistryAddr) {
-        _counter = 1;
+        _generation = 1;
         _ens = ENS(ensRegistryAddr);
         _magicGrass = IERC20(new MagicGrass(_msgSender()));
-        generation = 0;
     }
 
     /// @dev Check bull's owner
@@ -66,14 +50,16 @@ abstract contract BullsToTheMoonCore is
         _;
     }
 
-    /// @dev see {BullsToTheMoonInterface-breed}
+    /**
+     * @dev see {BullsToTheMoonInterface-breed}
+     */
     function breed() external override returns (uint256) {
         _magicGrass.transferFrom(_msgSender(), address(this), 1000e18);
-        uint256 newId = _counter;
+        uint256 newId = totalSupply() + 1;
         _safeMint(_msgSender(), newId);
-        bullStateOf[newId] = BullState(
+        _bullData[newId] = BullData(
             // state
-            generation,
+            _generation,
             true,
             1000,
             // position
@@ -81,7 +67,6 @@ abstract contract BullsToTheMoonCore is
             0,
             0
         );
-        _counter++;
         return newId;
     }
 
@@ -93,7 +78,7 @@ abstract contract BullsToTheMoonCore is
         bytes32 namehash,
         int8 leverage
     ) external override checkOwner(bullId) {
-        BullState storage target = bullStateOf[bullId];
+        BullData storage target = _bullData[bullId];
 
         // check parameters
         require(target.closed, "already opened");
@@ -118,7 +103,7 @@ abstract contract BullsToTheMoonCore is
      * @dev See {BullsToTheMoonInterface-close}.
      */
     function close(uint256 bullId) external override checkOwner(bullId) {
-        BullState storage target = bullStateOf[bullId];
+        BullData storage target = _bullData[bullId];
         require(!target.closed, "already closed");
 
         // get current price
@@ -141,7 +126,7 @@ abstract contract BullsToTheMoonCore is
      * @dev See {BullsToTheMoonInterface-report}.
      */
     function report(uint256 bullId) external override {
-        BullState storage target = bullStateOf[bullId];
+        BullData storage target = _bullData[bullId];
         require(!target.closed, "should be opened");
 
         // get current price
@@ -158,17 +143,34 @@ abstract contract BullsToTheMoonCore is
             1000;
         require(margin < 0, "not out of margin");
 
-        // liberate the bull
-        _burn(bullId);
-        delete bullStateOf[bullId];
+        // bankrupt the bull
+        delete _bullData[bullId];
 
         // reward the reporter
         _magicGrass.transfer(_msgSender(), 100e18);
     }
 
     /**
-     * @dev Resolve ENS-namehash to Chainlink price feed proxy
+     * @dev see {BullsToTheMoonInterface-generation}
      */
+    function generation() public view override returns (uint32) {
+        return _generation;
+    }
+
+    /**
+     * @dev see {BullsToTheMoonInterface-getData}
+     */
+    function getBullData(uint256 bullId)
+        public
+        view
+        override
+        returns (BullData memory)
+    {
+        require(_exists(bullId), "query for nonexistent bull");
+        return _bullData[bullId];
+    }
+
+    /// @dev Resolve ENS-namehash to Chainlink price feed proxy
     function _resolve(bytes32 namehash) internal view returns (address) {
         Resolver resolver = _ens.resolver(namehash);
         return resolver.addr(namehash);
