@@ -8,7 +8,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     const ensRegistryAddr = 
         chainId === '1337' ?
-            (await get("MockEnsRegistry")).address:            
+            (await get("MockEnsRegistry")).address:
             "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
 
     // deploy
@@ -29,3 +29,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     console.log("");
 };
 export default func;
+func.tags = ['bulls'];

@@ -3,7 +3,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers } from "hardhat";
+import { ethers, getNamedAccounts } from "hardhat";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -13,13 +13,19 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
+  const { deployer } = await getNamedAccounts();
+
   // We get the contract to deploy
-  const BullFactory = await ethers.getContractFactory("BullsToTheMoon");
-  const bullContract = await BullFactory.deploy(ethers.constants.AddressZero);
+  const BullsFactory = await ethers.getContractFactory("BullsToTheMoon");
+  const bullsContract = await BullsFactory.deploy(
+    "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/",
+    [deployer], [1]);
 
-  await bullContract.deployed();
-
-  console.log("BullsToTheMoon deployed to:", bullContract.address);
+  await bullsContract.deployed();
+  console.log("BullsToTheMoon deployed to:", bullsContract.address);
+  const mgsAddr = await bullsContract.getMagicGrassAddr();
+  console.log("MagicGrass deployed to:", mgsAddr);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
