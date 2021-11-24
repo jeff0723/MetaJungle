@@ -19,9 +19,14 @@ interface BullsToTheMoonInterface {
     /**
      * @notice Core: Open a long position with leverage
      * @param bullId ID of the bull
+     * @param namehash ENS namehash of chainlink price feed
      * @param leverage Perpetual leverage
      */
-    function open(uint256 bullId, int8 leverage) external;
+    function open(
+        uint256 bullId,
+        bytes32 namehash,
+        int8 leverage
+    ) external;
 
     /**
      * @notice Core: Close the position and update its net worth
