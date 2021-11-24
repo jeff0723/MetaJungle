@@ -16,6 +16,8 @@
     "test": "yarn workspace @bulls-and-bears/hardhat test",
     "deploy":"yarn workspace @bulls-and-bears/hardhat deploy",
     "coverage":"yarn workspace @bulls-and-bears/hardhat coverage",
-    "etherscan-verify":"yarn workspace @bulls-and-bears/hardhat etherscan-verify"
+    "etherscan-verify":"yarn workspace @bulls-and-bears/hardhat etherscan-verify",
+    "react-app":"yarn workspace @bulls-and-bears/react-app",
+    "hardhat":"yarn workspace @bulls-and-bears/hardhat"
   }
 }
