@@ -5,6 +5,10 @@ import {
   BrowserRouter as Router, NavLink, Routes, Route
 } from "react-router-dom";
 import QuickStart from './components/QuickStart'
+import Collections from './components/Collections'
+import Account from "./components/Account";
+import "./style.css";
+
 const { Header } = Layout;
 const { Title } = Typography;
 const styles = {
@@ -19,7 +23,7 @@ const styles = {
     justifyContent: "center",
     fontFamily: "Roboto, sans-serif",
     color: "#041836",
-    marginTop: "30px",
+    marginTop: "75px",
     padding: "10px",
   },
 }
@@ -36,32 +40,19 @@ function App() {
             <Menu.Item key="quickstart">
               <NavLink to="/quickstart">🚀 Quick Start</NavLink>
             </Menu.Item>
-            <Menu.Item key="wallet">
-              <NavLink to="/wallet">👛 Wallet</NavLink>
-            </Menu.Item>
-            <Menu.Item key="onramp">
-              <NavLink to="/onramp">💵 Fiat</NavLink>
-            </Menu.Item>
-            <Menu.Item key="dex">
-              <NavLink to="/1inch">🏦 Dex</NavLink>
-            </Menu.Item>
-            <Menu.Item key="balances">
-              <NavLink to="/erc20balance">💰 Balances</NavLink>
-            </Menu.Item>
-            <Menu.Item key="transfers">
-              <NavLink to="/erc20transfers">💸 Transfers</NavLink>
-            </Menu.Item>
-            <Menu.Item key="nft">
-              <NavLink to="/nftBalance">🖼 NFTs</NavLink>
-            </Menu.Item>
-            <Menu.Item key="contract">
-              <NavLink to="/contract">📄 Contract</NavLink>
+            <Menu.Item key="collections">
+              <NavLink to="/collections">👛 Collections</NavLink>
             </Menu.Item>
           </Menu>
+          <div>
+            <Account />
+          </div>
         </Header>
         <div style={styles.content}>
           <Routes>
             <Route path='/quickstart' element={<QuickStart />} />
+            <Route path='/collections' element={<Collections />} />
+
           </Routes>
         </div>
       </Router>

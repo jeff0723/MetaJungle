@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Divider, Typography } from "antd";
+import { Card, Divider, Typography, BackTop } from "antd";
 const { Title, Text } = Typography;
 
 interface Props {
@@ -10,13 +10,14 @@ const styles = {
         boxShadow: "0 0.5rem 1.2rem rgb(189 197 209 / 20%)",
         border: "1px solid #e7eaf3",
         borderRadius: "0.5rem",
+        maxWidth: '875px'
     },
 };
 const QuickStart = (props: Props) => {
     return (
         <div>
-            <Card style={styles.card} title={<Title level={2}>How To Play</Title>}>
-                <Title level={3}>Breed a Bull</Title>
+            <Card style={styles.card} title={<Title level={2}>📝 How To Play</Title>}>
+                <Title level={3}>🐂 Breed a Bull</Title>
                 <ul>
                     <li><Text>Deposit 1000 magic grass ($MGS) to start a position</Text></li>
                     <li><Text>Select a trading pair to open a posistion</Text></li>
@@ -25,27 +26,27 @@ const QuickStart = (props: Props) => {
                     <li><Text>You may also use leverage to increase your breeding speed</Text></li>
                 </ul>
                 <Divider />
-                <Title level={3}>Report a bankrupt bull</Title>
+                <Title level={3}>⚓ Report a bankrupt bull</Title>
                 <ul>
                     <li><Text>You can report an bull if it is bankrupted</Text></li>
                     <li><Text>After the report success, reporter will be reward 100 magic grass</Text></li>
                 </ul>
                 <Divider />
-                <Title level={3}>Occupy a field</Title>
+                <Title level={3}>🏝️ Occupy a field</Title>
                 <ul>
                     <li><Text>When you have a animal breed, you can occupy a field</Text></li>
                     <li><Text>You might be kicked out from your field if other stronger animal comes</Text></li>
                     <li><Text>There are only 100 fields</Text></li>
                 </ul>
                 <Divider />
-                <Title level={3}>Generations</Title>
+                <Title level={3}>🌱 Generations</Title>
                 <ul>
                     <li><Text>Each generation lasts 25 days</Text></li>
                     <li><Text>After the end of a generation, animals field will be reward 80% of value locked in this generation</Text></li>
                     <li><Text>10% of value locked will be giving to winner of proposal</Text></li>
                 </ul>
                 <Divider />
-                <Title level={3}>Proposals</Title>
+                <Title level={3}>📃 Proposals</Title>
                 <ul>
                     <li><Text>Everyone can file a proposal for the animal skin of next generation</Text></li>
                     <li><Text>Any animal occupying a field and vote for the landlord to determine their future look</Text></li>
@@ -53,6 +54,7 @@ const QuickStart = (props: Props) => {
                 </ul>
                 <Divider />
             </Card>
+            <BackTop />
 
         </div>
     )
