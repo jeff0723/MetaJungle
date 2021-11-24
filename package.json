@@ -12,12 +12,11 @@
     "react-app:test": "yarn workspace @bulls-and-bears/react-app test",
     "start": "yarn workspace @bulls-and-bears/react-app start",
     "compile": "yarn workspace @bulls-and-bears/hardhat compile",
-    "node": "yarn workspace @bulls-and-bears/hardhat node",
     "test": "yarn workspace @bulls-and-bears/hardhat test",
-    "deploy":"yarn workspace @bulls-and-bears/hardhat deploy",
-    "coverage":"yarn workspace @bulls-and-bears/hardhat coverage",
-    "etherscan-verify":"yarn workspace @bulls-and-bears/hardhat etherscan-verify",
-    "react-app":"yarn workspace @bulls-and-bears/react-app",
-    "hardhat":"yarn workspace @bulls-and-bears/hardhat"
+    "deploy": "yarn workspace @bulls-and-bears/hardhat deploy",
+    "coverage": "yarn workspace @bulls-and-bears/hardhat coverage",
+    "etherscan-verify": "yarn workspace @bulls-and-bears/hardhat etherscan-verify",
+    "react-app": "yarn workspace @bulls-and-bears/react-app",
+    "hardhat": "yarn workspace @bulls-and-bears/hardhat hardhat"
   }
 }

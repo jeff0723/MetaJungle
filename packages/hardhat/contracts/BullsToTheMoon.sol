@@ -36,4 +36,11 @@ contract BullsToTheMoon is BullsToTheMoonGovernance, PaymentSplitter {
         string memory genBaseURI = _baseURIofGeneration[bullGeneration];
         return string(abi.encodePacked(genBaseURI, netWorth.toString()));
     }
+
+    /**
+     * @notice Return address of MagicGrass contract
+     */
+    function getMagicGrassAddr() public view returns (address) {
+        return address(_magicGrass);
+    }
 }
