@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  */
 contract MagicGrass is ERC20 {
     /// @dev Setup name, symbol and initial supply
-    constructor(address founder) ERC20("MagicGrass", "MG") {
+    constructor(address founder) ERC20("MagicGrass", "MGS") {
         _mint(_msgSender(), 5e21);
         _mint(founder, 5e21);
     }

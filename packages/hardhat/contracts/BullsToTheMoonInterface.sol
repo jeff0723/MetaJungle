@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 /**
- * @title Bulls (dynamic NFTs) that grow with rising price
+ * @title Interface of BullsToTheMoon
  * @author Justa Liang
  */
 interface BullsToTheMoonInterface {
