@@ -1,5 +1,5 @@
-import React from 'react'
-import { Card, Divider, Typography, BackTop } from "antd";
+import { Card, Divider, Typography } from "antd";
+import React from 'react';
 const { Title, Text } = Typography;
 
 interface Props {
@@ -54,7 +54,6 @@ const QuickStart = (props: Props) => {
                 </ul>
                 <Divider />
             </Card>
-            <BackTop />
 
         </div>
     )
