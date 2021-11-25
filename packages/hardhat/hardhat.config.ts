@@ -39,7 +39,6 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      chainId: 1337,
       accounts: {
         mnemonic: "test test test test test test test test test test test junk",
       },
@@ -49,6 +48,12 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+  },
+  typechain: {
+    outDir: "../react-app/src/typechain",
+  },
+  paths: {
+    deployments: "../react-app/src/deployments",
   },
   namedAccounts: {
     deployer: 0,

@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ethers, deployments } from "hardhat";
 const { BigNumber } = ethers;
 const { parseEther, formatEther } = ethers.utils;
-import { BullsToTheMoon__factory, MagicGrass__factory } from "../typechain";
+import { BullsToTheMoon__factory, MagicGrass__factory } from "../../react-app/src/typechain";
 
 
 describe("BullsToTheMoon", function () {

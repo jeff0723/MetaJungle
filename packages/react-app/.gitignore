@@ -11,6 +11,12 @@
 # production
 /build
 
+# local deployment
+src/deployments/localhost
+
+# typechain
+src/typechain
+
 # misc
 .DS_Store
 .env.local
