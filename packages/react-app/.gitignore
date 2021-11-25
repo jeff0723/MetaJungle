@@ -14,7 +14,7 @@
 # local deployment
 src/deployments/localhost
 
-
+src/typechain
 # misc
 .DS_Store
 .env.local
