@@ -13,7 +13,13 @@ function MoralisDappProvider({ children }) {
 
     Moralis.onAccountsChanged(function (address) {
       setWalletAddress(address[0]);
+      console.log("wallet change");
     });
+    Moralis.onDisconnect(()=>{
+      setWalletAddress("");
+      console.log("disconnect");
+
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

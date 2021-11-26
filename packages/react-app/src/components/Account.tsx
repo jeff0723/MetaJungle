@@ -30,7 +30,7 @@ const Account = () => {
     const { authenticate, isAuthenticated, logout } = useMoralis();
     const { walletAddress, chainId } = useMoralisDapp();
     const [isModalVisible, setIsModalVisible] = useState(false);
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !walletAddress) {
         return (
             <div
                 style={styles.account}
