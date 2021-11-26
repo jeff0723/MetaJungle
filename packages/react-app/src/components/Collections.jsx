@@ -3,7 +3,7 @@ import { Card, Skeleton, Typography } from "antd";
 import React, { useEffect, useState } from 'react';
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import styled from 'styled-components';
-import BULLS_TO_THE_MOON_ABI from '../abis/BullsToTheMoon.json';
+import { Bullosseum__factory } from "../typechain";
 import { BULLOSSEUM_ADDRESS } from '../constants/address';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 
@@ -64,7 +64,7 @@ const Collections = () => {
     const { walletAddress, chainId } = useMoralisDapp();
     const [contractAddress, setContractAddress] = useState("");
     const { runContractFunction } = useWeb3Contract({
-        abi: BULLS_TO_THE_MOON_ABI,
+        abi: Bullosseum__factory.abi,
         contractAddress: contractAddress,
         functionName: "breed",
     });
