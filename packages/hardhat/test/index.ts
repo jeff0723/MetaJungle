@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { ethers, deployments } from "hardhat";
-const { BigNumber } = ethers;
 const { parseEther, formatEther, namehash } = ethers.utils;
 import { Bullosseum__factory, BullosseumAmissionFee__factory, MockPublicResolver__factory, MockV3Aggregator__factory } from "../../react-app/src/typechain";
 
