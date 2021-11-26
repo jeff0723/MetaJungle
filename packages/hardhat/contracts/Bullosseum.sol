@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
-import "./BullsToTheMoonGovernance.sol";
+import "./BullosseumGovernance.sol";
 
-contract BullsToTheMoon is BullsToTheMoonGovernance, PaymentSplitter {
+contract Bullosseum is BullosseumGovernance, PaymentSplitter {
     using Strings for uint256;
 
     /// @dev Setup PaymentSplitter
@@ -15,10 +15,10 @@ contract BullsToTheMoon is BullsToTheMoonGovernance, PaymentSplitter {
         address[] memory payees,
         uint256[] memory shares
     )
-        ERC721("BullsToTheMoon", "BTTM")
-        BullsToTheMoonCore(ensRegistryAddr)
-        BullsToTheMoonFields()
-        BullsToTheMoonGovernance(baseURI)
+        ERC721("BullosseumFigher", "BoF")
+        BullosseumFighter(ensRegistryAddr)
+        BullosseumFields()
+        BullosseumGovernance(baseURI)
         PaymentSplitter(payees, shares)
     {}
 
@@ -38,9 +38,9 @@ contract BullsToTheMoon is BullsToTheMoonGovernance, PaymentSplitter {
     }
 
     /**
-     * @notice Return address of MagicGrass contract
+     * @notice Return address of BAF contract
      */
-    function getMagicGrassAddr() public view returns (address) {
-        return address(_magicGrass);
+    function getAddrOfBAF() public view returns (address) {
+        return address(_bafContract);
     }
 }

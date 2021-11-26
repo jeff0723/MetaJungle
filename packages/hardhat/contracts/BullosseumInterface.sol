@@ -2,12 +2,12 @@
 pragma solidity ^0.8.0;
 
 /**
- * @title Interface of BullsToTheMoon
+ * @title Interface of Bullosseum
  * @author Justa Liang
  */
-interface BullsToTheMoonInterface {
+interface BullosseumInterface {
     //-------------------------
-    // Core
+    // Fighter
     //-------------------------
 
     /**
@@ -17,7 +17,7 @@ interface BullsToTheMoonInterface {
     function breed() external returns (uint256);
 
     /**
-     * @notice Core: Open a long position with leverage
+     * @notice Fighter: Open a long position with leverage
      * @param bullId ID of the bull
      * @param namehash ENS namehash of chainlink price feed
      * @param leverage Perpetual leverage
@@ -29,13 +29,13 @@ interface BullsToTheMoonInterface {
     ) external;
 
     /**
-     * @notice Core: Close the position and update its net worth
+     * @notice Fighter: Close the position and update its net worth
      * @param bullId ID of the bull
      */
     function close(uint256 bullId) external;
 
     /**
-     * @notice Core: Report a bull ran out of margin
+     * @notice Fighter: Report a bull ran out of margin
      * @param bullId ID of the bull
      */
     function report(uint256 bullId) external;

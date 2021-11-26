@@ -16,16 +16,16 @@ async function main() {
   const { deployer } = await getNamedAccounts();
 
   // We get the contract to deploy
-  const BullsFactory = await ethers.getContractFactory("BullsToTheMoon");
+  const BullsFactory = await ethers.getContractFactory("Bullosseum");
   const bullsContract = await BullsFactory.deploy(
     "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/",
     [deployer], [1]);
 
   await bullsContract.deployed();
-  console.log("BullsToTheMoon deployed to:", bullsContract.address);
-  const mgsAddr = await bullsContract.getMagicGrassAddr();
-  console.log("MagicGrass deployed to:", mgsAddr);
+  console.log("Bullosseum deployed to:", bullsContract.address);
+  const bafAddr = await bullsContract.getAddrOfBAF();
+  console.log("BullosseumAmissionFee deployed to:", bafAddr);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -15,7 +15,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         const resolver = await deploy("MockPublicResolver", { from: deployer });
         console.log("Resolver deployed to:", resolver.address);
         const mockPairs = ['eth-usd', 'btc-usd', 'bnb-usd', 'link-usd'];
-        const mockPrices = [3500, 50000, 400, 30];
+        const mockPrices = [4000, 60000, 600, 30];
 
         for (const [idx, pair] of mockPairs.entries()) {
             const pairHash = ethers.utils.namehash(pair + ".data.eth");
@@ -24,7 +24,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
             const mockAgg = await deploy(`MockV3Aggregator_${pair}`, {
                 contract: 'MockV3Aggregator',
                 from: deployer,
-                args:[1, mockPrices[idx]*10**8]
+                args:[8, mockPrices[idx]*10**8]
             });
             console.log(idx, pair, "Aggregator deployed to:", mockAgg.address);  
             await execute(

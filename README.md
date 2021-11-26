@@ -1,4 +1,4 @@
-# Bulls To The Moon
+# Bullosseum
 
 ## Usage
 clone repo

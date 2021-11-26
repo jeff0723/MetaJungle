@@ -12,7 +12,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
             "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
 
     // deploy
-    const bullsDeployments = await deploy("BullsToTheMoon", {
+    const bullsDeployments = await deploy("Bullosseum", {
         from: deployer,
         args: [
             ensRegistryAddr, 
@@ -23,9 +23,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     });
 
     console.log("");
-    console.log("BullsToTheMoon deployed at:", bullsDeployments.address);
+    console.log("Bullosseum deployed at:", bullsDeployments.address);
     console.log("");
-    console.log("MagicGrass deployed at:", await read("BullsToTheMoon", "getMagicGrassAddr"));
+    console.log("BullosseumAmissionFee deployed at:", await read("Bullosseum", "getAddrOfBAF"));
     console.log("");
 };
 export default func;

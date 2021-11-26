@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import styled from 'styled-components';
 import BULLS_TO_THE_MOON_ABI from '../abis/BullsToTheMoon.json';
-import { BULLS_TO_THE_MOON_ADDRESS } from '../constants/address';
+import { BULLOSSEUM_ADDRESS } from '../constants/address';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 
 const { Text, Title } = Typography
@@ -63,45 +63,45 @@ const Collections = () => {
     const { Moralis, authenticate } = useMoralis();
     const { walletAddress, chainId } = useMoralisDapp();
     const [contractAddress, setContractAddress] = useState("");
-    const { runContractFunction} = useWeb3Contract({
+    const { runContractFunction } = useWeb3Contract({
         abi: BULLS_TO_THE_MOON_ABI,
         contractAddress: contractAddress,
         functionName: "breed",
-      });
+    });
     useEffect(() => {
         if (chainId) {
-            setContractAddress(BULLS_TO_THE_MOON_ADDRESS[chainId])
+            setContractAddress(BULLOSSEUM_ADDRESS[chainId]);
         }
     }, [chainId])
     const handleCreateBreed = async () => {
-        if(!contractAddress) return;
+        if (!contractAddress) return;
         if (!walletAddress) {
             authenticate();
         }
         runContractFunction();
     }
-        // tx.on("transactionHash", (hash) => {
-        //     openNotification({
-        //       message: "🔊 New Transaction",
-        //       description: `${hash}`,
-        //     });
-        //     console.log("🔊 New Transaction", hash);
-        //   })
-        //     .on("receipt", (receipt) => {
-        //       openNotification({
-        //         message: "📃 New Receipt",
-        //         description: `${receipt.transactionHash}`,
-        //       });
-        //       console.log("🔊 New Receipt: ", receipt);
-        //     })
-        //     .on("error", (error) => {
-        //       console.log(error);
-        //     });
+    // tx.on("transactionHash", (hash) => {
+    //     openNotification({
+    //       message: "🔊 New Transaction",
+    //       description: `${hash}`,
+    //     });
+    //     console.log("🔊 New Transaction", hash);
+    //   })
+    //     .on("receipt", (receipt) => {
+    //       openNotification({
+    //         message: "📃 New Receipt",
+    //         description: `${receipt.transactionHash}`,
+    //       });
+    //       console.log("🔊 New Receipt: ", receipt);
+    //     })
+    //     .on("error", (error) => {
+    //       console.log(error);
+    //     });
     // }
     console.log("walletAddress: ", walletAddress)
     console.log("chainId: ", chainId)
     console.log("contractAddress: ", contractAddress)
-    console.log('web3: ',Moralis.Web3);
+    console.log('web3: ', Moralis.Web3);
     return (
         <div>
             <Card style={styles.card} title={<Title level={2}>💰 Inventory</Title>}>

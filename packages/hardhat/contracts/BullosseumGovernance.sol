@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./BullsToTheMoonFields.sol";
+import "./BullosseumFields.sol";
 
 /**
  * @title Governance of bull community
  * @author Justa Liang
  */
-abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
+abstract contract BullosseumGovernance is BullosseumFields {
     /// @dev Max number of proposals
     uint8 private constant SLOT_SIZE = 10;
 
@@ -44,7 +44,7 @@ abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-propose}
+     * @notice See {BullosseumInterface-propose}
      */
     function propose(string calldata newBaseURI, uint8 slotId)
         external
@@ -73,7 +73,7 @@ abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-vote}
+     * @notice See {BullosseumInterface-vote}
      */
     function vote(uint256 proposalId, uint8[] calldata fieldIdList)
         external
@@ -94,14 +94,14 @@ abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
         target.voteCount += fieldCount;
 
         // reward voter
-        _magicGrass.transfer(
+        _bafContract.transfer(
             _msgSender(),
             ((balanceOf(address(this)) * fieldCount) * 8) / 10 / GRASSLAND_SIZE
         );
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-startVote}
+     * @notice See {BullosseumInterface-startVote}
      */
     function startVote() external override proposingStage {
         require(
@@ -114,7 +114,7 @@ abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-endVote}
+     * @notice See {BullosseumInterface-endVote}
      */
     function endVote() external override votingStage {
         require(
@@ -136,7 +136,10 @@ abstract contract BullsToTheMoonGovernance is BullsToTheMoonFields {
         Proposal memory winningProp = _proposals[maxIdx];
 
         // reward winner
-        _magicGrass.transfer(_msgSender(), (balanceOf(address(this))) / 10);
+        _bafContract.transfer(
+            winningProp.proposer,
+            (balanceOf(address(this))) / 10
+        );
 
         // evolve to next generation
         generation++;

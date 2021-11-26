@@ -73,13 +73,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "BullsToTheMoon",
+      name: "Bullosseum",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BullsToTheMoon__factory>;
+    ): Promise<Contracts.Bullosseum__factory>;
     getContractFactory(
-      name: "BullsToTheMoonCore",
+      name: "BullosseumAmissionFee",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BullsToTheMoonCore__factory>;
+    ): Promise<Contracts.BullosseumAmissionFee__factory>;
+    getContractFactory(
+      name: "BullosseumFields",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BullosseumFields__factory>;
+    getContractFactory(
+      name: "BullosseumFighter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BullosseumFighter__factory>;
     getContractFactory(
       name: "ENS",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -89,21 +97,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Resolver__factory>;
     getContractFactory(
-      name: "BullsToTheMoonFields",
+      name: "BullosseumGovernance",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BullsToTheMoonFields__factory>;
+    ): Promise<Contracts.BullosseumGovernance__factory>;
     getContractFactory(
-      name: "BullsToTheMoonGovernance",
+      name: "BullosseumInterface",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BullsToTheMoonGovernance__factory>;
-    getContractFactory(
-      name: "BullsToTheMoonInterface",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BullsToTheMoonInterface__factory>;
-    getContractFactory(
-      name: "MagicGrass",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MagicGrass__factory>;
+    ): Promise<Contracts.BullosseumInterface__factory>;
     getContractFactory(
       name: "MockEnsRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -193,15 +193,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "BullsToTheMoon",
+      name: "Bullosseum",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.BullsToTheMoon>;
+    ): Promise<Contracts.Bullosseum>;
     getContractAt(
-      name: "BullsToTheMoonCore",
+      name: "BullosseumAmissionFee",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.BullsToTheMoonCore>;
+    ): Promise<Contracts.BullosseumAmissionFee>;
+    getContractAt(
+      name: "BullosseumFields",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BullosseumFields>;
+    getContractAt(
+      name: "BullosseumFighter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BullosseumFighter>;
     getContractAt(
       name: "ENS",
       address: string,
@@ -213,25 +223,15 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Resolver>;
     getContractAt(
-      name: "BullsToTheMoonFields",
+      name: "BullosseumGovernance",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.BullsToTheMoonFields>;
+    ): Promise<Contracts.BullosseumGovernance>;
     getContractAt(
-      name: "BullsToTheMoonGovernance",
+      name: "BullosseumInterface",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.BullsToTheMoonGovernance>;
-    getContractAt(
-      name: "BullsToTheMoonInterface",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.BullsToTheMoonInterface>;
-    getContractAt(
-      name: "MagicGrass",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MagicGrass>;
+    ): Promise<Contracts.BullosseumInterface>;
     getContractAt(
       name: "MockEnsRegistry",
       address: string,

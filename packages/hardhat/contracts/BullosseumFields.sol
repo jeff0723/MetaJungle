@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./BullsToTheMoonCore.sol";
+import "./BullosseumFighter.sol";
 
 /**
  * @title Fields that allow bulls to occupy
  * @author Justa Liang
  */
-abstract contract BullsToTheMoonFields is BullsToTheMoonCore {
+abstract contract BullosseumFields is BullosseumFighter {
     /// @dev Max number of fields
     uint8 internal constant GRASSLAND_SIZE = 100;
 
@@ -41,7 +41,7 @@ abstract contract BullsToTheMoonFields is BullsToTheMoonCore {
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-occupy}
+     * @notice See {BullosseumInterface-occupy}
      */
     function occupy(uint256 bullId, uint8 fieldId)
         external
@@ -59,11 +59,12 @@ abstract contract BullsToTheMoonFields is BullsToTheMoonCore {
         uint256 defenderId = _bullIdOnField[fieldId];
         BullData storage defenderData = _bullData[defenderId];
 
-        // check if attacker can overtake
-        if (
-            defenderData.closed &&
-            defenderData.generation == attackerData.generation
-        ) {
+        // attacker should be of this generation
+        require(attackerData.generation == generation, "bull too old");
+
+        // if the defender bull is at open position or out of generation
+        // then will be replaced regardless of net worth
+        if (defenderData.closed && defenderData.generation == generation) {
             require(
                 attackerData.netWorth > defenderData.netWorth,
                 "attacker can't overtake"

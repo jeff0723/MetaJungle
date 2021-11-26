@@ -19,7 +19,7 @@ const QuickStart = (props: Props) => {
             <Card style={styles.card} title={<Title level={2}>📝 How To Play</Title>}>
                 <Title level={3}>🐂 Breed a Bull</Title>
                 <ul>
-                    <li><Text>Deposit 1000 magic grass ($MGS) to start a position</Text></li>
+                    <li><Text>Deposit 1000 amission fee ($BAF) to start a position</Text></li>
                     <li><Text>Select a trading pair to open a posistion</Text></li>
                     <li><Text>Each position is a ERC-721 token, which presenting a bull that will grow up with your trading return</Text></li>
                     <li><Text>When there is a change of return, the metadata of your NFT will also change</Text></li>
@@ -29,7 +29,7 @@ const QuickStart = (props: Props) => {
                 <Title level={3}>⚓ Report a bankrupt bull</Title>
                 <ul>
                     <li><Text>You can report an bull if it is bankrupted</Text></li>
-                    <li><Text>After the report success, reporter will be reward 100 magic grass</Text></li>
+                    <li><Text>After the report success, reporter will be reward 100 amission fee</Text></li>
                 </ul>
                 <Divider />
                 <Title level={3}>🏝️ Occupy a field</Title>

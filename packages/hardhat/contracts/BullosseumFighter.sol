@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./BullsToTheMoonInterface.sol";
-import "./MagicGrass.sol";
+import "./BullosseumInterface.sol";
+import "./BullosseumAmissionFee.sol";
 
 /// @notice ENS registry to get chainlink resolver
 interface ENS {
@@ -18,13 +18,10 @@ interface Resolver {
 }
 
 /**
- * @title Core operations of virtual trading
+ * @title Define the operations of Bull Fighter
  * @author Justa Liang
  */
-abstract contract BullsToTheMoonCore is
-    BullsToTheMoonInterface,
-    ERC721Enumerable
-{
+abstract contract BullosseumFighter is BullosseumInterface, ERC721Enumerable {
     /**
      * @notice Generation of bulls
      */
@@ -33,8 +30,8 @@ abstract contract BullsToTheMoonCore is
     /// @dev ENS interface
     ENS private _ens;
 
-    /// @dev MagicGrass interface
-    IERC20 internal _magicGrass;
+    /// @dev BullosseumAmissionFee contract
+    IERC20 internal _bafContract;
 
     /// @dev Map from bull ID to on-chain data
     mapping(uint256 => BullData) internal _bullData;
@@ -50,11 +47,11 @@ abstract contract BullsToTheMoonCore is
         int8 leverage; // leverage when opening position
     }
 
-    /// @dev Initialize generation, setup ENS registry and deploy MagicGrass
+    /// @dev Initialize generation, setup ENS registry and deploy BullosseumAmissionFee
     constructor(address ensRegistryAddr) {
         generation = 1;
         _ens = ENS(ensRegistryAddr);
-        _magicGrass = IERC20(new MagicGrass(_msgSender()));
+        _bafContract = IERC20(new BullosseumAmissionFee(_msgSender()));
     }
 
     /// @dev Check bull's owner
@@ -64,11 +61,11 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @notice see {BullsToTheMoonInterface-breed}
+     * @notice see {BullosseumInterface-breed}
      */
     function breed() external override returns (uint256) {
-        // cost 1000 MagicGrass
-        _magicGrass.transferFrom(_msgSender(), address(this), 1000e18);
+        // cost 1000 BAF
+        _bafContract.transferFrom(_msgSender(), address(this), 1000e18);
 
         // mint token
         uint256 newId = totalSupply() + 1;
@@ -88,7 +85,7 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-open}.
+     * @notice See {BullosseumInterface-open}.
      */
     function open(
         uint256 bullId,
@@ -117,7 +114,7 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-close}.
+     * @notice See {BullosseumInterface-close}.
      */
     function close(uint256 bullId) external override checkOwner(bullId) {
         BullData storage target = _bullData[bullId];
@@ -140,7 +137,7 @@ abstract contract BullsToTheMoonCore is
     }
 
     /**
-     * @notice See {BullsToTheMoonInterface-report}.
+     * @notice See {BullosseumInterface-report}.
      */
     function report(uint256 bullId) external override {
         BullData storage target = _bullData[bullId];
@@ -161,10 +158,10 @@ abstract contract BullsToTheMoonCore is
         require(margin < 0, "not out of margin");
 
         // bankrupt the bull
-        delete _bullData[bullId];
+        target.netWorth = 0;
 
         // reward the reporter
-        _magicGrass.transfer(_msgSender(), 100e18);
+        _bafContract.transfer(_msgSender(), 100e18);
     }
 
     /**
