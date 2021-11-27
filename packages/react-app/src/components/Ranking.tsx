@@ -17,7 +17,7 @@ const Ranking = (props: Props) => {
             const options = {
                 chain: chainId,
                 address: META_JUNGLE_ADDRESS[chainId],
-                topic: "0xff5c2b2eb99fd86cd5a2c44906926905cb82721b9b020f611d52765bf9382098",
+                topic: "0xfa534782d33171b4fd6bad477513fbf21d9c8d47c60cd6cb4dd49ba52a6b5cb6",
                 abi: CURRENT_JUNGLER_STATE_ABI
             }
             const response = await native.getContractEvents(options);
