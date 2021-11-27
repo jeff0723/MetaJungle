@@ -1,13 +1,14 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Card, Skeleton, Typography, notification, message } from "antd";
-import React, { useEffect, useState } from 'react';
-import { useMoralis, useWeb3Contract, useApiContract, useMoralisWeb3Api } from "react-moralis";
-import styled from 'styled-components';
-import { MetaJungle__factory, JungleResource__factory as JGR_factory } from "../typechain";
-import { JUNGLE_RESOURCE, META_JUNGLE_ADDRESS } from '../constants/address';
-import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
+import { Card, notification, Typography } from "antd";
 import { ethers } from "ethers";
-
+import React, { useEffect, useState } from 'react';
+import { useMoralis, useMoralisWeb3Api } from "react-moralis";
+import styled from 'styled-components';
+import JungleCard from '../components/JunglerCard';
+import { JUNGLE_RESOURCE, META_JUNGLE_ADDRESS } from '../constants/address';
+import { resolveIPFSLink } from '../helpers/formatters';
+import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
+import { JungleResource__factory as JGR_factory, MetaJungle__factory } from "../typechain";
 const { Text, Title } = Typography
 const AddCard = styled('div')`
     border: 2px dashed #e7eaf3;
@@ -52,11 +53,7 @@ const styles = {
             background: "rgba(255,255,255,0.3)"
         }
     },
-    gameCard: {
-        borderRadius: '1rem',
-        width: '198px',
-        height: '264px',
-    }
+
 }
 
 const openNotificationWithIcon = (type, message, description) => {
@@ -69,14 +66,28 @@ const openNotificationWithIcon = (type, message, description) => {
 // struct JunglerProfile {
 //     uint256 id;
 //     uint32 generation;
-//     bool closed;
-//     bool onField;
-//     int256 power;
+//     bool isOpen;
+//     bool isCampping;
+//     int40 power;
 //     address proxy;
 //     int256 openPrice;
 //     int8 leverage;
 //     string tokenURI;
 // }
+
+const mapProfileArrayToObject = (profileArray) => {
+    return {
+        id: parseInt(profileArray[0]),
+        generation: parseInt(profileArray[1]),
+        isOpen: profileArray[2],
+        isCamping: profileArray[3],
+        power: parseInt(profileArray[4]),
+        proxy: profileArray[5],
+        openPrice: parseInt(profileArray[6]),
+        leverage: parseInt(profileArray[7]),
+        tokenURI: resolveIPFSLink(profileArray[8])
+    }
+}
 const Collections = () => {
     const { Moralis, authenticate, isWeb3Enabled, web3, enableWeb3, isAuthenticated } = useMoralis();
     const { account, native, token } = useMoralisWeb3Api();
@@ -84,7 +95,7 @@ const Collections = () => {
     const [metaJungleAddress, setMetaJungleAddress] = useState("");
     const [jungleResourceAdrress, setJungleResourceAddress] = useState("")
     const [allowance, setAllowance] = useState("0");
-    const [junglerProfileList, setJunglerProfileList] = useState();
+    const [junglerProfileList, setJunglerProfileList] = useState([]);
     useEffect(() => {
         const getAllowance = async () => {
             const options = {
@@ -175,6 +186,14 @@ const Collections = () => {
                 })
         }
     }
+
+    const renderJunglerList = () => {
+        if (junglerProfileList.length) {
+            return junglerProfileList.map((item, index) => (
+                <JungleCard junglerProfile={mapProfileArrayToObject(item)} />
+            ));
+        }
+    }
     console.log("walletAddress: ", walletAddress)
     console.log("chainId: ", chainId)
     console.log("metaJungleAddress: ", metaJungleAddress)
@@ -206,9 +225,7 @@ const Collections = () => {
                             <Text>This is the first step to collecting and breeding bulls</Text>
                         </div>
                     </AddCard>
-                    <Skeleton.Input style={styles.gameCard} />
-                    <Skeleton.Input style={styles.gameCard} />
-                    <Skeleton.Input style={styles.gameCard} />
+                    {renderJunglerList()}
 
                 </div>
             </Card >

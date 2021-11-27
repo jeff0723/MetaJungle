@@ -4,3 +4,7 @@ export const getEllipsisTxt = (str:string, n = 6) => {
     }
     return "";
   };
+  export const resolveIPFSLink = (url:string) => {
+    if (!url || !url.includes("ipfs://")) return url;
+    return url.replace("ipfs://", "https://gateway.ipfs.io/ipfs/");
+  };
