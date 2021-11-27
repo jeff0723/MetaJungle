@@ -1,21 +1,20 @@
 import { expect } from "chai";
 import { ethers, deployments } from "hardhat";
 const { parseEther, formatEther, namehash } = ethers.utils;
-import { Bullosseum__factory, BullosseumAmissionFee__factory, MockPublicResolver__factory, MockV3Aggregator__factory } from "../../react-app/src/typechain";
+import { MetaJungle__factory, JungleResource__factory, MockPublicResolver__factory, MockV3Aggregator__factory } from "../../react-app/src/typechain";
 
-
-describe("Bullosseum", function () {
+describe("MetaJungle", function () {
 
   it("Simple flow", async function () {
     // Accounts
-    const [dev ,user0 ,user1] = await ethers.getSigners();
+    const [dev, player0, player1] = await ethers.getSigners();
 
     // Deployment
-    await deployments.fixture(["mock", "bulls"]);
-    const bullsDeployment = await deployments.get("Bullosseum");
-    const bullsContract = Bullosseum__factory.connect(bullsDeployment.address, dev);
-    const bafAddr = await bullsContract.getAddrOfBAF();
-    const bafContract = BullosseumAmissionFee__factory.connect(bafAddr, dev);
+    await deployments.fixture(["mock", "jungle"]);
+    const jungleDeployment = await deployments.get("MetaJungle");
+    const jungleContract = MetaJungle__factory.connect(jungleDeployment.address, dev);
+    const jgrAddr = await jungleContract.getAddrOfJGR();
+    const jgrContract = JungleResource__factory.connect(jgrAddr, dev);
     const mockResolverDeployment = await deployments.get("MockPublicResolver");
     const mockResolver = MockPublicResolver__factory.connect(mockResolverDeployment.address, dev);
     const ethPriceFeed = MockV3Aggregator__factory.connect(await mockResolver.addr(namehash("eth-usd.data.eth")), dev);
@@ -24,62 +23,62 @@ describe("Bullosseum", function () {
 
     // Test start
     console.log("\nTest start\n");
-    let tx, bullData;
+    let tx, junglerData;
 
-    // Dev transfer BAF to user0
-    console.log("\nDev transfer 1000 BAF to user0");
-    tx = await bafContract.transfer(user0.address, parseEther("1000"));
+    // Dev transfer JGR to player0
+    console.log("\nDev transfer 1 JGR to player0");
+    tx = await jgrContract.transfer(player0.address, parseEther("1"));
     await tx.wait();
-    console.log("-- user0 has", formatEther(await bafContract.balanceOf(user0.address)), "BAF");
+    console.log("-- player0 has", formatEther(await jgrContract.balanceOf(player0.address)), "JGR");
 
-    // Dev transfer BAF to user1
-    console.log("\nDev transfer 2000 BAF to user1");
-    tx = await bafContract.transfer(user1.address, parseEther("2000"));
+    // Dev transfer JGR to player1
+    console.log("\nDev transfer 2 JGR to player1");
+    tx = await jgrContract.transfer(player1.address, parseEther("2"));
     await tx.wait();
-    console.log("-- user1 has", formatEther(await bafContract.balanceOf(user1.address)), "BAF");
+    console.log("-- player1 has", formatEther(await jgrContract.balanceOf(player1.address)), "JGR");
 
-    // User1 approve BAF to Bullosseum
-    tx = await bafContract.connect(user1).approve(bullsContract.address, ethers.constants.MaxUint256);
-    await tx.wait();
-
-    // User1 breed a bull
-    console.log("\nUser1 breed a bull");
-    tx = await bullsContract.connect(user1).breed();
-    await tx.wait();
-    const bullId1 = await bullsContract.tokenOfOwnerByIndex(user1.address, 0);
-    console.log("-- user1 has bull#"+bullId1.toString());
-
-    // User0 approve BAF to Bullosseum
-    tx = await bafContract.connect(user0).approve(bullsContract.address, ethers.constants.MaxUint256);
+    // Player1 approve JGR to MetaJungle
+    tx = await jgrContract.connect(player1).approve(jungleContract.address, ethers.constants.MaxUint256);
     await tx.wait();
 
-    // User0 breed a bull
-    console.log("\nUser0 breed a bull");
-    tx = await bullsContract.connect(user0).breed();
+    // Player1 summon a jungler
+    console.log("\nPlayer1 summon a jungler");
+    tx = await jungleContract.connect(player1).summon();
     await tx.wait();
-    const bullId2 = await bullsContract.tokenOfOwnerByIndex(user0.address, 0);
-    console.log("-- user0 has bull#"+bullId2.toString());
+    const junglerId1 = await jungleContract.tokenOfOwnerByIndex(player1.address, 0);
+    console.log("-- player1 has jungler#"+junglerId1.toString());
 
-    // User1 breed a bull
-    console.log("\nUser1 breed a bull");
-    tx = await bullsContract.connect(user1).breed();
+    // Player0 approve JGR to MetaJungle
+    tx = await jgrContract.connect(player0).approve(jungleContract.address, ethers.constants.MaxUint256);
     await tx.wait();
-    const bullId3 = await bullsContract.tokenOfOwnerByIndex(user1.address, 1);
-    console.log("-- user1 has bull#"+bullId3.toString());
 
-    // User1 open bull#0 in pair ETH/USD with leverage 1
-    console.log("\nUser1 open bull#0 in ETH/USD with leverage 1");
-    tx = await bullsContract.connect(user1).open(bullId1, namehash("eth-usd.data.eth"), 10);
+    // Player0 summon a jungler
+    console.log("\nPlayer0 summon a jungler");
+    tx = await jungleContract.connect(player0).summon();
     await tx.wait();
-    bullData = await bullsContract.getBullData(bullId1);
-    console.log("-- bull#0 openPrice", bullData.openPrice.div(priceDivider).toNumber(), "leverage:", bullData.leverage);
+    const junglerId2 = await jungleContract.tokenOfOwnerByIndex(player0.address, 0);
+    console.log("-- player0 has jungler#"+junglerId2.toString());
+
+    // Player1 summon a jungler
+    console.log("\nPlayer1 summon a jungler");
+    tx = await jungleContract.connect(player1).summon();
+    await tx.wait();
+    const junglerId3 = await jungleContract.tokenOfOwnerByIndex(player1.address, 1);
+    console.log("-- player1 has jungler#"+junglerId3.toString());
+
+    // Player1 open jungler#0 in pair ETH/USD with leverage 1
+    console.log("\nPlayer1 open jungler#0 in ETH/USD with leverage 1");
+    tx = await jungleContract.connect(player1).open(junglerId1, namehash("eth-usd.data.eth"), 10);
+    await tx.wait();
+    junglerData = await jungleContract.getJunglerData(junglerId1);
+    console.log("-- jungler#0 openPrice", junglerData.openPrice.div(priceDivider).toNumber(), "leverage:", junglerData.leverage);
     
-    // User1 open bull#2 in pair ETH/USD with leverage 5
-    console.log("\nUser1 open bull#2 in ETH/USD with leverage 5");
-    tx = await bullsContract.connect(user1).open(bullId3, namehash("eth-usd.data.eth"), 50);
+    // Player1 open jungler#2 in pair ETH/USD with leverage 5
+    console.log("\nPlayer1 open jungler#2 in ETH/USD with leverage 5");
+    tx = await jungleContract.connect(player1).open(junglerId3, namehash("eth-usd.data.eth"), 50);
     await tx.wait();
-    bullData = await bullsContract.getBullData(bullId3);
-    console.log("-- bull#2 openPrice", bullData.openPrice.div(priceDivider).toNumber(), "leverage:", bullData.leverage);
+    junglerData = await jungleContract.getJunglerData(junglerId3);
+    console.log("-- jungler#2 openPrice", junglerData.openPrice.div(priceDivider).toNumber(), "leverage:", junglerData.leverage);
 
     // ETH/USD price rise 20%
     console.log("\nETH/USD rise 20%");
@@ -89,18 +88,18 @@ describe("Bullosseum", function () {
     console.log("-- ETH/USD:", previousPrice.div(priceDivider).toNumber(),
                   "=>", (await ethPriceFeed.latestAnswer()).div(priceDivider).toNumber());
 
-    // User1 close bull#0 position
-    console.log("\nUser1 close bull#0");
-    tx = await bullsContract.connect(user1).close(bullId1);
+    // Player1 close jungler#0 position
+    console.log("\nPlayer1 close jungler#0");
+    tx = await jungleContract.connect(player1).close(junglerId1);
     await tx.wait();
-    bullData = await bullsContract.getBullData(bullId1);
-    console.log("-- bull#0 net worth:", bullData.netWorth.toNumber());
+    junglerData = await jungleContract.getJunglerData(junglerId1);
+    console.log("-- jungler#0 net worth:", junglerData.power.toNumber());
 
-    // User1 close bull#2 position
-    console.log("\nUser1 close bull#2");
-    tx = await bullsContract.connect(user1).close(bullId3);
+    // Player1 close jungler#2 position
+    console.log("\nPlayer1 close jungler#2");
+    tx = await jungleContract.connect(player1).close(junglerId3);
     await tx.wait();
-    bullData = await bullsContract.getBullData(bullId3);
-    console.log("-- bull#2 net worth:", bullData.netWorth.toNumber());
+    junglerData = await jungleContract.getJunglerData(junglerId3);
+    console.log("-- jungler#2 net worth:", junglerData.power.toNumber());
   });
 });

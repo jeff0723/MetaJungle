@@ -3,8 +3,8 @@ import { Card, Skeleton, Typography, notification, message } from "antd";
 import React, { useEffect, useState } from 'react';
 import { useMoralis, useWeb3Contract, useApiContract, useMoralisWeb3Api } from "react-moralis";
 import styled from 'styled-components';
-import { Bullosseum__factory, BullosseumAmissionFee__factory as BAF_factory } from "../typechain";
-import { BULLOSSEUM_ADDRESS, BAF_ADDRESS } from '../constants/address';
+import { MetaJungle__factory, JungleResource__factory as JGR_factory } from "../typechain";
+import { JUNGLE_RESOURCE, META_JUNGLE_ADDRESS } from '../constants/address';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 import { ethers } from "ethers";
 
@@ -65,24 +65,33 @@ const openNotificationWithIcon = (type, message, description) => {
         description: description,
     });
 };
+
+// struct JunglerProfile {
+//     uint256 id;
+//     uint32 generation;
+//     bool closed;
+//     bool onField;
+//     int256 power;
+//     address proxy;
+//     int256 openPrice;
+//     int8 leverage;
+//     string tokenURI;
+// }
 const Collections = () => {
     const { Moralis, authenticate, isWeb3Enabled, web3, enableWeb3, isAuthenticated } = useMoralis();
     const { account, native, token } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
-    const [bullosseumAddress, setBullosseumAddress] = useState("");
-    const [bafAddress, setBafAddress] = useState("")
-    const [bullContract, setBullContract] = useState();
-    const [bafContract, setBafContract] = useState();
-    const [allowance, setAllowance] = useState();
-    const [bullContractNFTs, setBullContractNFTs] = useState();
-
+    const [metaJungleAddress, setMetaJungleAddress] = useState("");
+    const [jungleResourceAdrress, setJungleResourceAddress] = useState("")
+    const [allowance, setAllowance] = useState("0");
+    const [junglerProfileList, setJunglerProfileList] = useState();
     useEffect(() => {
         const getAllowance = async () => {
             const options = {
                 chain: chainId,
                 owner_address: walletAddress,
-                spender_address: bullosseumAddress,
-                address: bafAddress
+                spender_address: metaJungleAddress,
+                address: jungleResourceAdrress
             };
             console.log('get allowance:')
             const { allowance } = await token.getTokenAllowance(options).then(result => (result));
@@ -92,51 +101,62 @@ const Collections = () => {
         const fetchNFT = async () => {
             const options = {
                 chain: chainId,
-                token_address: bullosseumAddress,
+                token_address: metaJungleAddress,
                 address: walletAddress
             }
             console.log('owner: ', walletAddress)
-            console.log("bullosseumAddress: ", '0xa3206Ff17ACb969e7AA1d0F7c092AD940A85e20A')
+            console.log("metaJungleAddress: ", '0xa3206Ff17ACb969e7AA1d0F7c092AD940A85e20A')
             const bullContractNFTs = await account.getNFTsForContract(options)
             console.log("bullContractNFTs: ", bullContractNFTs);
-            setBullContractNFTs(bullContractNFTs);
         }
-        if (chainId && !bullosseumAddress && !bafAddress) {
-            setBullosseumAddress(BULLOSSEUM_ADDRESS[chainId]);
-            setBafAddress(BAF_ADDRESS[chainId]);
+        const setJunglerProfileListAsync = async () => {
+            setJunglerProfileList(await getJunglerList());
+        }
+        if (chainId && !metaJungleAddress && !jungleResourceAdrress) {
+            setMetaJungleAddress(META_JUNGLE_ADDRESS[chainId]);
+            setJungleResourceAddress(JUNGLE_RESOURCE[chainId]);
         }
         if (walletAddress && !isWeb3Enabled) {
             enableWeb3();
         }
-        if (bafAddress && walletAddress && chainId) {
+        if (jungleResourceAdrress && walletAddress && chainId) {
             getAllowance()
         }
-        if (walletAddress && chainId && bullosseumAddress) {
+        if (walletAddress && chainId && metaJungleAddress) {
             console.log("start to fetch")
             fetchNFT();
         }
         if (!isWeb3Enabled) {
             enableWeb3();
         }
-        if (web3 && !bullContract && !bafContract) {
-            setBullContract(new web3.eth.Contract(Bullosseum__factory.abi, bullosseumAddress));
-            setBafContract(new web3.eth.Contract(BAF_factory.abi, bafAddress));
-
+        if (chainId && metaJungleAddress && walletAddress) {
+            setJunglerProfileListAsync();
         }
 
-    }, [chainId, walletAddress, bullosseumAddress, bafAddress, bullContract, bafContract])
+    }, [chainId, walletAddress, metaJungleAddress, jungleResourceAdrress])
 
+    const getJunglerList = async () => {
+        const options = {
+            chain: chainId,
+            address: metaJungleAddress,
+            function_name: "getOwnerJunglerList",
+            abi: MetaJungle__factory.abi,
+            params: { owner: walletAddress }
+        }
+        const response = await native.runContractFunction(options);
+        return response
+    }
     const handleCreateBreed = async () => {
         if (!walletAddress) {
             openNotificationWithIcon("warning", "Wallet Connect Warning", 'You need to connect to wallet to perform this action.');
             return;
         }
-        if (!bullosseumAddress || !web3 || !isWeb3Enabled || !bullContract || !bafContract) return;
+        if (!metaJungleAddress || !web3 || !isWeb3Enabled) return;
 
-        const contract = new web3.eth.Contract(BAF_factory.abi, bafAddress, { gas: 1000000, gasPrice: "2000000000" })
-        if (!allowance) {
+        if (!+allowance) {
+            const contract = new web3.eth.Contract(JGR_factory.abi, jungleResourceAdrress, { gas: 1000000, gasPrice: "2000000000" })
             let receipt = await contract.methods
-                .approve(bullosseumAddress, ethers.constants.MaxUint256)
+                .approve(metaJungleAddress, ethers.constants.MaxUint256)
                 .send({ from: walletAddress })
                 .then((response) => {
                     openNotificationWithIcon("success", "Approval success", 'Succesffully approve smart contract to use your token!');
@@ -144,25 +164,25 @@ const Collections = () => {
                 })
         }
         else {
-            let receipt = await bullContract.methods
-                .breed()
+            const contract = new web3.eth.Contract(MetaJungle__factory.abi, metaJungleAddress)
+            let receipt = await contract.methods
+                .summon()
                 .send({ from: walletAddress })
                 .then((response) => {
-                    console.log(response)
+                    openNotificationWithIcon("success", "Summon success", 'Succesffully summon a jungler!');
+                    getJunglerList();
                     return response;
                 })
         }
     }
     console.log("walletAddress: ", walletAddress)
     console.log("chainId: ", chainId)
-    console.log("bullosseumAddress: ", bullosseumAddress)
-    console.log("bullosseumAddress: ", bafAddress)
+    console.log("metaJungleAddress: ", metaJungleAddress)
+    console.log("metaJungleAddress: ", jungleResourceAdrress)
     console.log('isWeb3Enabled: ', isWeb3Enabled);
     console.log("isAuthenticated: ", isAuthenticated);
-    console.log("bullContract", bullContract);
-    console.log("bafContract", bafContract);
-    console.log("web3", web3);
-    console.log("bullContractNFT", bullContractNFTs);
+    console.log("allowance", allowance);
+    console.log("junglerProfileList", junglerProfileList)
     return (
         <div>
             <Card style={styles.card} title={<Title level={2}>💰 Inventory</Title>}>

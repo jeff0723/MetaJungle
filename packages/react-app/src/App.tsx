@@ -32,7 +32,7 @@ function App() {
     <Layout style={{ height: "100vh", overflow: "auto" }}>
       <Router>
         <Header style={styles.header} >
-          <Title level={5}>Bullosseum</Title>
+          <Title level={5}>MetaJungle</Title>
           <Menu
             theme="light"
             mode="horizontal"

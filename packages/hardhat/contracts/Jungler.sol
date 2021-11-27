@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./BullosseumInterface.sol";
-import "./BullosseumAmissionFee.sol";
+import "./MetaJungleInterface.sol";
+import "./JungleResource.sol";
 
 /// @notice ENS registry to get chainlink resolver
 interface ENS {
@@ -18,61 +18,64 @@ interface Resolver {
 }
 
 /**
- * @title Define the operations of Bull Fighter
+ * @title Define the actions of Jungler
  * @author Justa Liang
  */
-abstract contract BullosseumFighter is BullosseumInterface, ERC721Enumerable {
+abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
     /**
-     * @notice Generation of bulls
+     * @notice Current generation
      */
     uint32 public generation;
 
     /// @dev ENS interface
     ENS private _ens;
 
-    /// @dev BullosseumAmissionFee contract
-    IERC20 internal _bafContract;
+    /// @dev JungleResource contract
+    IERC20 internal _jgrContract;
 
-    /// @dev Map from bull ID to on-chain data
-    mapping(uint256 => BullData) internal _bullData;
-    struct BullData {
+    /// @dev Map from jungler ID to on-chain data
+    mapping(uint256 => JunglerData) internal _junglerData;
+    struct JunglerData {
         // state
-        uint32 generation; // the generation in which the bull bred
+        uint32 generation; // the generation in which the jungler bred
         bool closed; // position closed or not
         bool onField; // on the field or not
-        int256 netWorth; // net worth of the bull
+        int256 power; // net worth of the jungler
         // position
         address proxy; // proxy of Chainlink price feed
         int256 openPrice; // price when opening position
         int8 leverage; // leverage when opening position
     }
 
-    /// @dev Initialize generation, setup ENS registry and deploy BullosseumAmissionFee
+    /// @dev event emit
+    event CurrentJunglerState(uint256 indexed id, JunglerData data);
+
+    /// @dev Initialize generation, setup ENS registry and deploy JungleResource
     constructor(address ensRegistryAddr) {
         generation = 1;
         _ens = ENS(ensRegistryAddr);
-        _bafContract = IERC20(new BullosseumAmissionFee(_msgSender()));
+        _jgrContract = IERC20(new JungleResource(_msgSender()));
     }
 
-    /// @dev Check bull's owner
-    modifier checkOwner(uint256 bullId) {
-        require(_isApprovedOrOwner(msg.sender, bullId), "not owner");
+    /// @dev Check jungler's owner
+    modifier checkOwner(uint256 junglerId) {
+        require(_isApprovedOrOwner(msg.sender, junglerId), "not owner");
         _;
     }
 
     /**
-     * @notice see {BullosseumInterface-breed}
+     * @notice see {MetaJungleInterface-summon}
      */
-    function breed() external override returns (uint256) {
-        // cost 1000 BAF
-        _bafContract.transferFrom(_msgSender(), address(this), 1000e18);
+    function summon() external override {
+        // cost 1000 JGR
+        _jgrContract.transferFrom(_msgSender(), address(this), 1e18);
 
         // mint token
         uint256 newId = totalSupply() + 1;
         _safeMint(_msgSender(), newId);
 
         // allocate data
-        _bullData[newId] = BullData(
+        _junglerData[newId] = JunglerData(
             generation,
             true,
             false,
@@ -81,22 +84,24 @@ abstract contract BullosseumFighter is BullosseumInterface, ERC721Enumerable {
             0,
             0
         );
-        return newId;
+        emit CurrentJunglerState(newId, _junglerData[newId]);
     }
 
     /**
-     * @notice See {BullosseumInterface-open}.
+     * @notice See {MetaJungleInterface-open}.
      */
     function open(
-        uint256 bullId,
+        uint256 junglerId,
         bytes32 namehash,
         int8 leverage
-    ) external override checkOwner(bullId) {
-        BullData storage target = _bullData[bullId];
+    ) external override checkOwner(junglerId) {
+        JunglerData storage target = _junglerData[junglerId];
+
+        // check generation
+        require(target.generation == generation, "generation error");
 
         // check parameters
         require(target.closed, "already opened");
-        require(leverage >= 10 && leverage <= 100, "invalid leverage");
 
         // resolve namehash
         address proxy = _resolve(namehash);
@@ -111,13 +116,14 @@ abstract contract BullosseumFighter is BullosseumInterface, ERC721Enumerable {
         target.proxy = proxy;
         target.openPrice = currPrice;
         target.leverage = leverage;
+        emit CurrentJunglerState(junglerId, target);
     }
 
     /**
-     * @notice See {BullosseumInterface-close}.
+     * @notice See {MetaJungleInterface-close}.
      */
-    function close(uint256 bullId) external override checkOwner(bullId) {
-        BullData storage target = _bullData[bullId];
+    function close(uint256 junglerId) external override checkOwner(junglerId) {
+        JunglerData storage target = _junglerData[junglerId];
         require(!target.closed, "already closed");
 
         // get current price
@@ -126,21 +132,22 @@ abstract contract BullosseumFighter is BullosseumInterface, ERC721Enumerable {
 
         // update on-chain data
         target.closed = true;
-        target.netWorth +=
+        target.power +=
             ((currPrice - target.openPrice) *
                 target.leverage *
                 100 *
-                target.netWorth) /
+                target.power) /
             target.openPrice /
             1000;
-        require(target.netWorth >= 0, "run out of margin");
+        require(target.power >= 0, "run out of margin");
+        emit CurrentJunglerState(junglerId, target);
     }
 
     /**
-     * @notice See {BullosseumInterface-report}.
+     * @notice See {MetaJungleInterface-gank}.
      */
-    function report(uint256 bullId) external override {
-        BullData storage target = _bullData[bullId];
+    function gank(uint256 junglerId) external override {
+        JunglerData storage target = _junglerData[junglerId];
         require(!target.closed, "should be opened");
 
         // get current price
@@ -148,28 +155,33 @@ abstract contract BullosseumFighter is BullosseumInterface, ERC721Enumerable {
         (, int256 currPrice, , , ) = pricefeed.latestRoundData();
 
         // compute margin and check
-        int256 margin = target.netWorth +
+        int256 margin = target.power +
             ((currPrice - target.openPrice) *
                 target.leverage *
                 100 *
-                target.netWorth) /
+                target.power) /
             target.openPrice /
             1000;
         require(margin < 0, "not out of margin");
 
-        // bankrupt the bull
-        target.netWorth = 0;
+        // bankrupt the jungler
+        target.power = 0;
+        emit CurrentJunglerState(junglerId, target);
 
-        // reward the reporter
-        _bafContract.transfer(_msgSender(), 100e18);
+        // reward the ganker
+        _jgrContract.transfer(_msgSender(), 100e18);
     }
 
     /**
-     * @notice Return bull data given bull ID
+     * @notice Return jungler data given jungler ID
      */
-    function getBullData(uint256 bullId) public view returns (BullData memory) {
-        require(_exists(bullId), "query for nonexistent bull");
-        return _bullData[bullId];
+    function getJunglerData(uint256 junglerId)
+        public
+        view
+        returns (JunglerData memory)
+    {
+        require(_exists(junglerId), "query for nonexistent jungler");
+        return _junglerData[junglerId];
     }
 
     /// @dev Resolve ENS-namehash to Chainlink price feed proxy
