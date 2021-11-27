@@ -63,7 +63,7 @@ abstract contract JungleBush is Jungler {
         require(attackerData.generation == generation, "jungler too old");
 
         // if the defender jungler is at open position or out of generation
-        // then will be replaced regardless of net worth
+        // then will be replaced regardless of power
         if (!defenderData.isOpen && defenderData.generation == generation) {
             require(
                 attackerData.power > defenderData.power,
