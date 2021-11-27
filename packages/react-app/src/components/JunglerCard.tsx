@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import { notification, Typography, Modal, Input, Select, Button } from "antd";
 import { resolveIPFSLink } from '../helpers/formatters'
-import pricePairs from '../constants/pricePairs'
+import { pricePairs } from '../constants/pricePairs'
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { META_JUNGLE_ADDRESS } from '../constants/address';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
@@ -80,13 +80,40 @@ const openNotificationWithIcon = (type: string, message: string, description: st
             });
     }
 };
+
+const mapProfileArrayToObject = (profileArray: any) => {
+    return {
+        id: parseInt(profileArray[0]),
+        generation: parseInt(profileArray[1]),
+        isOpen: profileArray[2],
+        isCamping: profileArray[3],
+        power: parseInt(profileArray[4]),
+        proxy: profileArray[5],
+        openPrice: parseInt(profileArray[6]),
+        leverage: parseInt(profileArray[7]),
+        tokenURI: resolveIPFSLink(profileArray[8])
+    }
+}
 const JunglerCard = ({ junglerProfile }: Props) => {
+    const [profile, setProfile] = useState<JunglerProfile>(junglerProfile);
     const { web3, Moralis } = useMoralis();
     const { walletAddress, chainId } = useMoralisDapp();
     const [imageURL, setImageURL] = useState<string>()
     const [isDashBoardOpen, setIsDashBoardOpen] = useState(false);
     const [pair, setPair] = useState<string>();
     const [leverage, setLeverage] = useState<string>();
+    const getJungler = async () => {
+        const options = {
+            chain: chainId,
+            address: META_JUNGLE_ADDRESS[chainId],
+            function_name: "getJunglerProfile",
+            abi: MetaJungle__factory.abi,
+            params: { junglerId: junglerProfile.id }
+        }
+        const response = await Moralis.Web3API.native.runContractFunction(options);
+        console.log('jungler data:', response)
+        return response
+    }
     useEffect(() => {
         const _setImageURL = async () => {
             setImageURL(await fetchMetaData(junglerProfile.tokenURI));
@@ -111,21 +138,23 @@ const JunglerCard = ({ junglerProfile }: Props) => {
                     leverage: leverage
                 }
             };
-            console.log('execute: ');
-            Moralis.Web3.executeFunction(options).then(() => {
+            Moralis.Web3.executeFunction(options).then(async () => {
                 openNotificationWithIcon("success", "Open position success", 'Succesffully open a position.');
+
+                setProfile(mapProfileArrayToObject((await getJungler())));
             })
         }
 
     }
+
 
     return (
         <>
             <StyledCard onClick={() => { setIsDashBoardOpen(true) }}>
                 <img src={imageURL} style={{ borderRadius: '1rem' }} alt='jungleCard' />
                 <div style={{ padding: '8px 16px' }}>
-                    <Text>ID: {junglerProfile.id}</Text><br />
-                    <Text>Power: {junglerProfile.power / 1000}</Text><br />
+                    <Text>ID: {profile.id}</Text><br />
+                    <Text>Power: {profile.power / 1000}</Text><br />
                 </div>
             </StyledCard>
             <Modal
@@ -138,11 +167,18 @@ const JunglerCard = ({ junglerProfile }: Props) => {
                             <img src={imageURL} width="198px" height='198px' style={{ borderRadius: '1rem' }} alt='jungleCard' />
                         </div>
                         <FlexColumn style={{ justifyContent: 'space-between' }}>
-                            <BoldText>Generation: {junglerProfile.generation}</BoldText>
-                            <BoldText>ID: {junglerProfile.id}</BoldText>
-                            <BoldText >Power: {junglerProfile.power / 1000}</BoldText>
-                            <BoldText >Position: {junglerProfile.isOpen ? "Open" : "Closed"}</BoldText>
+                            <BoldText>Generation: {profile.generation}</BoldText>
+                            <BoldText>ID: {profile.id}</BoldText>
+                            <BoldText >Power: {profile.power / 1000}</BoldText>
+                            <BoldText >Position: {profile.isOpen ? "Open" : "Closed"}</BoldText>
+                            {profile.isOpen ?
+                                <>
+                                    <BoldText >Open: {profile.power / 1000}</BoldText>
+                                    <BoldText >Power: {profile.power / 1000}</BoldText>
 
+                                </> :
+                                <></>
+                            }
                         </FlexColumn>
                     </FlexRow>
                     <FlexColumn style={{ padding: '16px', gap: '16px', border: '1px solid #e7eaf3', marginTop: '32px', borderRadius: '16px' }}>

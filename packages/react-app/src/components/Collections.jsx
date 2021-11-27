@@ -89,7 +89,7 @@ const mapProfileArrayToObject = (profileArray) => {
     }
 }
 const Collections = () => {
-    const { Moralis, authenticate, isWeb3Enabled, web3, enableWeb3, isAuthenticated } = useMoralis();
+    const { isWeb3Enabled, web3, enableWeb3, isAuthenticated } = useMoralis();
     const { account, native, token } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
     const [metaJungleAddress, setMetaJungleAddress] = useState("");
@@ -166,7 +166,7 @@ const Collections = () => {
 
         if (!+allowance) {
             const contract = new web3.eth.Contract(JGR_factory.abi, jungleResourceAdrress, { gas: 1000000, gasPrice: "2000000000" })
-            let receipt = await contract.methods
+            contract.methods
                 .approve(metaJungleAddress, ethers.constants.MaxUint256)
                 .send({ from: walletAddress })
                 .then((response) => {
@@ -176,13 +176,12 @@ const Collections = () => {
         }
         else {
             const contract = new web3.eth.Contract(MetaJungle__factory.abi, metaJungleAddress)
-            let receipt = await contract.methods
+            contract.methods
                 .summon()
                 .send({ from: walletAddress })
-                .then((response) => {
+                .then(async (response) => {
                     openNotificationWithIcon("success", "Summon success", 'Succesffully summon a jungler!');
-                    getJunglerList();
-                    return response;
+                    setJunglerProfileList(await getJunglerList());
                 })
         }
     }
