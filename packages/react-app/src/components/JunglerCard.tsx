@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
-import { Card, notification, Typography, Modal, Input, Select, Button } from "antd";
+import { notification, Typography, Modal, Input, Select, Button } from "antd";
 import { resolveIPFSLink } from '../helpers/formatters'
-const { Text, Title } = Typography
+import pricePairs from '../constants/pricePairs'
+import { useMoralis, useWeb3Contract } from "react-moralis";
+import { META_JUNGLE_ADDRESS } from '../constants/address';
+import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
+import { MetaJungle__factory } from "../typechain";
+import { utils } from 'ethers'
+const { Text } = Typography
 const { Option } = Select;
 
 interface JunglerProfile {
@@ -59,10 +65,28 @@ const fetchMetaData = async (tokenURI: string) => {
     return metaData;
 }
 
-
+const openNotificationWithIcon = (type: string, message: string, description: string) => {
+    switch (type) {
+        case "warning":
+            notification['warning']({
+                message: message,
+                description: description,
+            });
+            break;
+        case "success":
+            notification['success']({
+                message: message,
+                description: description,
+            });
+    }
+};
 const JunglerCard = ({ junglerProfile }: Props) => {
+    const { web3, Moralis } = useMoralis();
+    const { walletAddress, chainId } = useMoralisDapp();
     const [imageURL, setImageURL] = useState<string>()
     const [isDashBoardOpen, setIsDashBoardOpen] = useState(false);
+    const [pair, setPair] = useState<string>();
+    const [leverage, setLeverage] = useState<string>();
     useEffect(() => {
         const _setImageURL = async () => {
             setImageURL(await fetchMetaData(junglerProfile.tokenURI));
@@ -70,7 +94,31 @@ const JunglerCard = ({ junglerProfile }: Props) => {
         }
         _setImageURL();
     })
-    console.log(imageURL)
+
+    const handleCreate = () => {
+        if (!leverage || !pair) {
+            openNotificationWithIcon("warning", "Input not complete!", "Please compelete required input field.")
+            return
+        }
+        if (chainId && walletAddress) {
+            const options = {
+                contractAddress: META_JUNGLE_ADDRESS[chainId],
+                functionName: 'open',
+                abi: MetaJungle__factory.abi,
+                params: {
+                    junglerId: junglerProfile.id,
+                    namehash: utils.namehash(pair),
+                    leverage: leverage
+                }
+            };
+            console.log('execute: ');
+            Moralis.Web3.executeFunction(options).then(() => {
+                openNotificationWithIcon("success", "Open position success", 'Succesffully open a position.');
+            })
+        }
+
+    }
+
     return (
         <>
             <StyledCard onClick={() => { setIsDashBoardOpen(true) }}>
@@ -98,13 +146,15 @@ const JunglerCard = ({ junglerProfile }: Props) => {
                         </FlexColumn>
                     </FlexRow>
                     <FlexColumn style={{ padding: '16px', gap: '16px', border: '1px solid #e7eaf3', marginTop: '32px', borderRadius: '16px' }}>
-                        <Text>Open a postion</Text>
-                        <Select placeholder="Select your trading pair">
-                            <Option value="Option1-1">ETH/USD</Option>
+                        <Text>Open postion</Text>
+                        <Select placeholder="Select your trading pair" value={pair} onChange={(value) => { setPair(value) }}>
+                            {Object.keys(pricePairs).map((key, index) => (
+                                <Option value={pricePairs[key]}>{key}</Option>
+                            ))}
                         </Select>
-                        <Input placeholder="Set your leverage">
-                        </Input>
-                        <Button style={{ borderRadius: '16px', background: '#1890ff', color: '#ffffff' }}>Open</Button>
+                        <Input placeholder="Set your leverage" value={leverage} onChange={(e) => { setLeverage(e.target.value) }} />
+                        <Text style={{ fontSize: '12px', fontStyle: 'italic' }}>*note: leverage can only between -128 ~ 127</Text>
+                        <Button style={{ borderRadius: '16px', background: '#1890ff', color: '#ffffff' }} onClick={handleCreate}>Open</Button>
                     </FlexColumn>
                 </FlexColumn>
             </Modal>
