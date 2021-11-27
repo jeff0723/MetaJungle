@@ -11,8 +11,14 @@ abstract contract JungleBush is Jungler {
     /// @dev Max number of bushes
     uint8 internal constant ENV_CAPACITY = 100;
 
+    /// @dev Reward per second
+    uint256 private constant REWARD_PER_SEC = 1e11;
+
     /// @dev Map from bush ID to jungler ID (Faker the GOAT!!!)
     mapping(uint8 => uint256) private _hideOnBush;
+
+    /// @dev Map from bush ID to update time
+    mapping(uint8 => uint256) private _bushTimer;
 
     /**
      * @notice Stage of proposing or voting
@@ -75,6 +81,16 @@ abstract contract JungleBush is Jungler {
         defenderData.isCampping = false;
         attackerData.isCampping = true;
         _hideOnBush[bushId] = junglerId;
+
+        if (defenderId != 0) {
+            uint256 reward = (block.timestamp - _bushTimer[bushId]) *
+                REWARD_PER_SEC;
+            uint256 selfFund = balanceOf(address(this));
+            if (reward > selfFund) {
+                reward = selfFund;
+            }
+            transferFrom(address(this), ownerOf(defenderId), reward);
+        }
     }
 
     /**
