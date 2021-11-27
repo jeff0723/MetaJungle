@@ -74,17 +74,8 @@ const Collections = () => {
     const [bullContract, setBullContract] = useState();
     const [bafContract, setBafContract] = useState();
     const [allowance, setAllowance] = useState();
-    // const { runContractFunction } = useWeb3Contract({
-    //     abi: Bullosseum__factory.abi,
-    //     contractAddress: contractAddress,
-    // });
-    useEffect(() => {
-        if (chainId) {
-            setBullosseumAddress(BULLOSSEUM_ADDRESS[chainId]);
-            setBafAddress(BAF_ADDRESS[chainId]);
+    const [bullContractNFTs, setBullContractNFTs] = useState();
 
-        }
-    }, [chainId])
     useEffect(() => {
         const getAllowance = async () => {
             const options = {
@@ -98,24 +89,42 @@ const Collections = () => {
             setAllowance(allowance);
             console.log("allowance:", allowance)
         }
+        const fetchNFT = async () => {
+            const options = {
+                chain: chainId,
+                token_address: bullosseumAddress,
+                address: walletAddress
+            }
+            console.log('owner: ', walletAddress)
+            console.log("bullosseumAddress: ", '0xa3206Ff17ACb969e7AA1d0F7c092AD940A85e20A')
+            const bullContractNFTs = await account.getNFTsForContract(options)
+            console.log("bullContractNFTs: ", bullContractNFTs);
+            setBullContractNFTs(bullContractNFTs);
+        }
+        if (chainId && !bullosseumAddress && !bafAddress) {
+            setBullosseumAddress(BULLOSSEUM_ADDRESS[chainId]);
+            setBafAddress(BAF_ADDRESS[chainId]);
+        }
         if (walletAddress && !isWeb3Enabled) {
             enableWeb3();
         }
         if (bafAddress && walletAddress && chainId) {
             getAllowance()
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chainId, walletAddress])
-    useEffect(() => {
+        if (walletAddress && chainId && bullosseumAddress) {
+            console.log("start to fetch")
+            fetchNFT();
+        }
         if (!isWeb3Enabled) {
             enableWeb3();
         }
-        if (web3) {
+        if (web3 && !bullContract && !bafContract) {
             setBullContract(new web3.eth.Contract(Bullosseum__factory.abi, bullosseumAddress));
-            setBafContract(new web3.eth.Contract(BAF_factory.abi, bafAddress))
+            setBafContract(new web3.eth.Contract(BAF_factory.abi, bafAddress));
+
         }
-    }, [bullosseumAddress, bafAddress])
+
+    }, [chainId, walletAddress, bullosseumAddress, bafAddress, bullContract, bafContract])
 
     const handleCreateBreed = async () => {
         if (!walletAddress) {
@@ -130,8 +139,8 @@ const Collections = () => {
                 .approve(bullosseumAddress, ethers.constants.MaxUint256)
                 .send({ from: walletAddress })
                 .then((response) => {
-                    console.log(response);
                     openNotificationWithIcon("success", "Approval success", 'Succesffully approve smart contract to use your token!');
+                    setAllowance(ethers.constants.MaxUint256);
                 })
         }
         else {
@@ -143,36 +152,7 @@ const Collections = () => {
                     return response;
                 })
         }
-        // if(!allowance){
-        //     contract.methods.app
-        // }
-        // let receipt = await bullContract.methods
-        //     .breed()
-        //     .send({ from: walletAddress })
-        //     .then((response) => {
-        //         console.log(response)
-        //         return response;
-        //     })
-        // runContractFunction();
     }
-    // tx.on("transactionHash", (hash) => {
-    //     openNotification({
-    //       message: "🔊 New Transaction",
-    //       description: `${hash}`,
-    //     });
-    //     console.log("🔊 New Transaction", hash);
-    //   })
-    //     .on("receipt", (receipt) => {
-    //       openNotification({
-    //         message: "📃 New Receipt",
-    //         description: `${receipt.transactionHash}`,
-    //       });
-    //       console.log("🔊 New Receipt: ", receipt);
-    //     })
-    //     .on("error", (error) => {
-    //       console.log(error);
-    //     });
-    // }
     console.log("walletAddress: ", walletAddress)
     console.log("chainId: ", chainId)
     console.log("bullosseumAddress: ", bullosseumAddress)
@@ -182,7 +162,7 @@ const Collections = () => {
     console.log("bullContract", bullContract);
     console.log("bafContract", bafContract);
     console.log("web3", web3);
-
+    console.log("bullContractNFT", bullContractNFTs);
     return (
         <div>
             <Card style={styles.card} title={<Title level={2}>💰 Inventory</Title>}>
