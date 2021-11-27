@@ -36,7 +36,7 @@ const QuickStart = (props: Props) => {
                 <ul>
                     <li><Text>When you have a animal breed, you can occupy a field</Text></li>
                     <li><Text>You might be kicked out from your field if other stronger animal comes</Text></li>
-                    <li><Text>There are only 100 fields</Text></li>
+                    <li><Text>There are only 100 bushes</Text></li>
                 </ul>
                 <Divider />
                 <Title level={3}>🌱 Generations</Title>

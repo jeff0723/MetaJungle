@@ -4,15 +4,15 @@ pragma solidity ^0.8.0;
 import "./Jungler.sol";
 
 /**
- * @title Fields that allow Jungler to camp
+ * @title Bushes that allow junglers to camp
  * @author Justa Liang
  */
-abstract contract JungleFields is Jungler {
-    /// @dev Max number of fields
+abstract contract JungleBush is Jungler {
+    /// @dev Max number of bushes
     uint8 internal constant ENV_CAPACITY = 100;
 
-    /// @dev Map from field ID to jungler ID
-    mapping(uint8 => uint256) private _junglerIdOnField;
+    /// @dev Map from bush ID to jungler ID (Faker the GOAT!!!)
+    mapping(uint8 => uint256) private _hideOnBush;
 
     /**
      * @notice Stage of proposing or voting
@@ -23,13 +23,13 @@ abstract contract JungleFields is Jungler {
         VOTING
     }
 
-    /// @dev Voting stage (field locked)
+    /// @dev Voting stage (bush locked)
     modifier votingStage() {
         require(stage == Stage.VOTING, "not in voting stage");
         _;
     }
 
-    /// @dev Proposing stage (field not locked)
+    /// @dev Proposing stage (bush not locked)
     modifier proposingStage() {
         require(stage == Stage.PROPOSING, "not in proposing stage");
         _;
@@ -43,20 +43,20 @@ abstract contract JungleFields is Jungler {
     /**
      * @notice See {JungleInterface-camp}
      */
-    function camp(uint256 junglerId, uint8 fieldId)
+    function camp(uint256 junglerId, uint8 bushId)
         external
         override
         checkOwner(junglerId)
         proposingStage
     {
-        require(fieldId < ENV_CAPACITY, "out of grassland");
+        require(bushId < ENV_CAPACITY, "out of grassland");
 
         // get attacker data
         JunglerData storage attackerData = _junglerData[junglerId];
-        require(!attackerData.onField, "already on field");
+        require(!attackerData.isCampping, "already on bush");
 
         // get defender data
-        uint256 defenderId = _junglerIdOnField[fieldId];
+        uint256 defenderId = _hideOnBush[bushId];
         JunglerData storage defenderData = _junglerData[defenderId];
 
         // attacker should be of this generation
@@ -64,7 +64,7 @@ abstract contract JungleFields is Jungler {
 
         // if the defender jungler is at open position or out of generation
         // then will be replaced regardless of net worth
-        if (defenderData.closed && defenderData.generation == generation) {
+        if (!defenderData.isOpen && defenderData.generation == generation) {
             require(
                 attackerData.power > defenderData.power,
                 "attacker can't overtake"
@@ -72,16 +72,16 @@ abstract contract JungleFields is Jungler {
         }
 
         // update on-chain data
-        defenderData.onField = false;
-        attackerData.onField = true;
-        _junglerIdOnField[fieldId] = junglerId;
+        defenderData.isCampping = false;
+        attackerData.isCampping = true;
+        _hideOnBush[bushId] = junglerId;
     }
 
     /**
-     * @notice Return jungler ID given field ID
+     * @notice Return jungler ID given bush ID
      */
-    function getJunglerOnField(uint8 fieldId) public view returns (uint256) {
-        require(fieldId < ENV_CAPACITY, "out of grassland");
-        return _junglerIdOnField[fieldId];
+    function getJunglerOnBush(uint8 bushId) public view returns (uint256) {
+        require(bushId < ENV_CAPACITY, "out of grassland");
+        return _hideOnBush[bushId];
     }
 }

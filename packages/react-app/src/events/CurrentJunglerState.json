@@ -16,18 +16,18 @@
         },
         {
           "internalType": "bool",
-          "name": "closed",
+          "name": "isOpen",
           "type": "bool"
         },
         {
           "internalType": "bool",
-          "name": "onField",
+          "name": "isCampping",
           "type": "bool"
         },
         {
-          "internalType": "int256",
+          "internalType": "int40",
           "name": "power",
-          "type": "int256"
+          "type": "int40"
         },
         {
           "internalType": "address",

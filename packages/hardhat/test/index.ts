@@ -93,13 +93,13 @@ describe("MetaJungle", function () {
     tx = await jungleContract.connect(player1).close(junglerId1);
     await tx.wait();
     junglerData = await jungleContract.getJunglerData(junglerId1);
-    console.log("-- jungler#0 net worth:", junglerData.power.toNumber());
+    console.log("-- jungler#0 net worth:", junglerData.power);
 
     // Player1 close jungler#2 position
     console.log("\nPlayer1 close jungler#2");
     tx = await jungleContract.connect(player1).close(junglerId3);
     await tx.wait();
     junglerData = await jungleContract.getJunglerData(junglerId3);
-    console.log("-- jungler#2 net worth:", junglerData.power.toNumber());
+    console.log("-- jungler#2 net worth:", junglerData.power);
   });
 });

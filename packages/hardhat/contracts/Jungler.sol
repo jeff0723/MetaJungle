@@ -38,9 +38,9 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
     struct JunglerData {
         // state
         uint32 generation; // the generation in which the jungler bred
-        bool closed; // position closed or not
-        bool onField; // on the field or not
-        int256 power; // net worth of the jungler
+        bool isOpen; // if position is open
+        bool isCampping; // if jungle is campping
+        int40 power; // net worth of the jungler
         // position
         address proxy; // proxy of Chainlink price feed
         int256 openPrice; // price when opening position
@@ -77,9 +77,9 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
         // allocate data
         _junglerData[newId] = JunglerData(
             generation,
-            true,
             false,
-            1000,
+            false,
+            1e6,
             address(0),
             0,
             0
@@ -100,8 +100,8 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
         // check generation
         require(target.generation == generation, "generation error");
 
-        // check parameters
-        require(target.closed, "already opened");
+        // check position state
+        require(!target.isOpen, "already open");
 
         // resolve namehash
         address proxy = _resolve(namehash);
@@ -112,7 +112,7 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
         (, int256 currPrice, , , ) = pricefeed.latestRoundData();
 
         // update on-chain data
-        target.closed = false;
+        target.isOpen = true;
         target.proxy = proxy;
         target.openPrice = currPrice;
         target.leverage = leverage;
@@ -124,22 +124,19 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
      */
     function close(uint256 junglerId) external override checkOwner(junglerId) {
         JunglerData storage target = _junglerData[junglerId];
-        require(!target.closed, "already closed");
+        require(target.isOpen, "already closed");
 
         // get current price
         AggregatorV3Interface pricefeed = AggregatorV3Interface(target.proxy);
         (, int256 currPrice, , , ) = pricefeed.latestRoundData();
 
         // update on-chain data
-        target.closed = true;
-        target.power +=
-            ((currPrice - target.openPrice) *
-                target.leverage *
-                100 *
-                target.power) /
-            target.openPrice /
-            1000;
-        require(target.power >= 0, "run out of margin");
+        target.isOpen = false;
+        target.power += int40(
+            ((currPrice - target.openPrice) * target.leverage * target.power) /
+                (target.openPrice * 10)
+        );
+        require(target.power >= 0, "out of margin");
         emit CurrentJunglerState(junglerId, target);
     }
 
@@ -148,7 +145,7 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
      */
     function gank(uint256 junglerId) external override {
         JunglerData storage target = _junglerData[junglerId];
-        require(!target.closed, "should be opened");
+        require(target.isOpen, "should be open");
 
         // get current price
         AggregatorV3Interface pricefeed = AggregatorV3Interface(target.proxy);
@@ -156,12 +153,8 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
 
         // compute margin and check
         int256 margin = target.power +
-            ((currPrice - target.openPrice) *
-                target.leverage *
-                100 *
-                target.power) /
-            target.openPrice /
-            1000;
+            ((currPrice - target.openPrice) * target.leverage * target.power) /
+            (target.openPrice * 10);
         require(margin < 0, "not out of margin");
 
         // bankrupt the jungler
@@ -169,7 +162,7 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
         emit CurrentJunglerState(junglerId, target);
 
         // reward the ganker
-        _jgrContract.transfer(_msgSender(), 100e18);
+        _jgrContract.transfer(_msgSender(), 1e17);
     }
 
     /**

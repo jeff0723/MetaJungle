@@ -1,12 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import "./JungleGovernance.sol";
 
 contract MetaJungle is JungleGovernance, PaymentSplitter {
-    using Strings for uint256;
+    using Strings for uint40;
+
+    //// @dev Max display power
+    uint40 private constant MAX_DISPLAY_POWER = 100;
 
     /// @dev Setup PaymentSplitter
     constructor(
@@ -17,7 +19,7 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
     )
         ERC721("MetaJungler", "MJG")
         Jungler(ensRegistryAddr)
-        JungleFields()
+        JungleBush()
         JungleGovernance(baseURI)
         PaymentSplitter(payees, shares)
     {}
@@ -32,9 +34,12 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
         returns (string memory)
     {
         uint32 targetGeneration = _junglerData[tokenId].generation;
-        uint256 power = uint256(_junglerData[tokenId].power);
+        uint40 powerDisplay = uint40(_junglerData[tokenId].power) / 1e5;
+        if (powerDisplay > MAX_DISPLAY_POWER) {
+            powerDisplay = MAX_DISPLAY_POWER;
+        }
         string memory genBaseURI = _baseURIofGeneration[targetGeneration];
-        return string(abi.encodePacked(genBaseURI, power.toString()));
+        return string(abi.encodePacked(genBaseURI, powerDisplay.toString()));
     }
 
     /**
@@ -47,9 +52,9 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
     struct JunglerProfile {
         uint256 id;
         uint32 generation;
-        bool closed;
-        bool onField;
-        int256 power;
+        bool isOpen;
+        bool isCampping;
+        int40 power;
         address proxy;
         int256 openPrice;
         int8 leverage;
@@ -69,8 +74,8 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
             JunglerProfile(
                 junglerId,
                 target.generation,
-                target.closed,
-                target.onField,
+                target.isOpen,
+                target.isCampping,
                 target.power,
                 target.proxy,
                 target.openPrice,

@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./JungleFields.sol";
+import "./JungleBush.sol";
 
 /**
- * @title Governance of bull community
+ * @title Governance of jungle community
  * @author Justa Liang
  */
-abstract contract JungleGovernance is JungleFields {
+abstract contract JungleGovernance is JungleBush {
     /// @dev Max number of proposals
     uint8 private constant SLOT_SIZE = 10;
 
@@ -84,7 +84,7 @@ abstract contract JungleGovernance is JungleFields {
 
         // verify every field
         for (uint8 fid = 0; fid < fieldCount; fid++) {
-            uint256 junglerId = getJunglerOnField(fid);
+            uint256 junglerId = getJunglerOnBush(fid);
             require(ownerOf(junglerId) == _msgSender(), "not owner");
             require(_fieldGeneration[fid] < generation, "already voted");
             _fieldGeneration[fid] = generation;

@@ -34,21 +34,21 @@ interface MetaJungleInterface {
     function close(uint256 junglerId) external;
 
     /**
-     * @notice Jungler: Gank a jungler ran out of margin
+     * @notice Jungler: Gank a jungler who ran out of margin
      * @param junglerId ID of the jungler
      */
     function gank(uint256 junglerId) external;
 
     //-------------------------
-    // Fields
+    // Bush
     //-------------------------
 
     /**
-     * @notice Fields: Camp at certain field
+     * @notice Bush: Camp at certain field
      * @param junglerId ID of the jungler
-     * @param fieldId ID of the field on grassland
+     * @param bushId ID of the field on grassland
      */
-    function camp(uint256 junglerId, uint8 fieldId) external;
+    function camp(uint256 junglerId, uint8 bushId) external;
 
     //-------------------------
     // Governance
@@ -62,11 +62,11 @@ interface MetaJungleInterface {
     function propose(string calldata newBaseURI, uint8 slotId) external payable;
 
     /**
-     * @notice Governance: Vote the proposals using owned fields
+     * @notice Governance: Vote the proposals using owned bush
      * @param proposalId ID of the proposal
-     * @param fieldIdList List of field ID that voter occupied
+     * @param bushIdList List of field ID that voter occupied
      */
-    function vote(uint256 proposalId, uint8[] calldata fieldIdList) external;
+    function vote(uint256 proposalId, uint8[] calldata bushIdList) external;
 
     /**
      * @notice Governance: Start the vote
