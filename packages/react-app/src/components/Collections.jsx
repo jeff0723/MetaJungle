@@ -3,7 +3,7 @@ import { Card, Skeleton, Typography, notification, message } from "antd";
 import React, { useEffect, useState } from 'react';
 import { useMoralis, useWeb3Contract, useApiContract, useMoralisWeb3Api } from "react-moralis";
 import styled from 'styled-components';
-import { Bullosseum__factory, BullosseumAmissionFee__factory as BAF_factory } from "../typechain";
+import { MetaJungle__factory, JungleResource__factory as JGR_factory } from "../typechain";
 import { BULLOSSEUM_ADDRESS, BAF_ADDRESS } from '../constants/address';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 import { ethers } from "ethers";
@@ -75,8 +75,7 @@ const Collections = () => {
     const [bafContract, setBafContract] = useState();
     const [allowance, setAllowance] = useState();
     // const { runContractFunction } = useWeb3Contract({
-    //     abi: Bullosseum__factory.abi,
-    //     contractAddress: contractAddress,
+    //     abi: MetaJungle__factory.abiJungleResourceAddress: contractAddress,
     // });
     useEffect(() => {
         if (chainId) {
@@ -112,8 +111,8 @@ const Collections = () => {
             enableWeb3();
         }
         if (web3) {
-            setBullContract(new web3.eth.Contract(Bullosseum__factory.abi, bullosseumAddress));
-            setBafContract(new web3.eth.Contract(BAF_factory.abi, bafAddress))
+            setBullContract(new web3.eth.Contract(MetaJungle__factory.abi, bullosseumAddress));
+            setBafContract(new web3.eth.Contract(JGR_factory.abi, bafAddress));
         }
     }, [bullosseumAddress, bafAddress])
 
@@ -124,7 +123,7 @@ const Collections = () => {
         }
         if (!bullosseumAddress || !web3 || !isWeb3Enabled || !bullContract || !bafContract) return;
 
-        const contract = new web3.eth.Contract(BAF_factory.abi, bafAddress, { gas: 1000000, gasPrice: "2000000000" })
+        const contract = new web3.eth.Contract(JGR_factory.abi, bafAddress, { gas: 1000000, gasPrice: "2000000000" })
         if (!allowance) {
             let receipt = await contract.methods
                 .approve(bullosseumAddress, ethers.constants.MaxUint256)

@@ -2,54 +2,53 @@
 pragma solidity ^0.8.0;
 
 /**
- * @title Interface of Bullosseum
+ * @title Interface of JungleFinance
  * @author Justa Liang
  */
-interface BullosseumInterface {
+interface MetaJungleInterface {
     //-------------------------
-    // Fighter
+    // Jungler
     //-------------------------
 
     /**
-     * @notice Breed a bull
-     * @return ID of the new bull
+     * @notice Summon a jungler
      */
-    function breed() external returns (uint256);
+    function summon() external;
 
     /**
-     * @notice Fighter: Open a long position with leverage
-     * @param bullId ID of the bull
+     * @notice Jungler: Open a long position with leverage
+     * @param junglerId ID of the jungler
      * @param namehash ENS namehash of chainlink price feed
      * @param leverage Perpetual leverage
      */
     function open(
-        uint256 bullId,
+        uint256 junglerId,
         bytes32 namehash,
         int8 leverage
     ) external;
 
     /**
-     * @notice Fighter: Close the position and update its net worth
-     * @param bullId ID of the bull
+     * @notice Jungler: Close the position and update its net worth
+     * @param junglerId ID of the jungler
      */
-    function close(uint256 bullId) external;
+    function close(uint256 junglerId) external;
 
     /**
-     * @notice Fighter: Report a bull ran out of margin
-     * @param bullId ID of the bull
+     * @notice Jungler: Gank a jungler ran out of margin
+     * @param junglerId ID of the jungler
      */
-    function report(uint256 bullId) external;
+    function gank(uint256 junglerId) external;
 
     //-------------------------
     // Fields
     //-------------------------
 
     /**
-     * @notice Fields: Occupy certain field
-     * @param bullId ID of the bull
+     * @notice Fields: Camp at certain field
+     * @param junglerId ID of the jungler
      * @param fieldId ID of the field on grassland
      */
-    function occupy(uint256 bullId, uint8 fieldId) external;
+    function camp(uint256 junglerId, uint8 fieldId) external;
 
     //-------------------------
     // Governance

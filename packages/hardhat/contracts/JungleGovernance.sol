@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./BullosseumFields.sol";
+import "./JungleFields.sol";
 
 /**
  * @title Governance of bull community
  * @author Justa Liang
  */
-abstract contract BullosseumGovernance is BullosseumFields {
+abstract contract JungleGovernance is JungleFields {
     /// @dev Max number of proposals
     uint8 private constant SLOT_SIZE = 10;
 
@@ -44,7 +44,7 @@ abstract contract BullosseumGovernance is BullosseumFields {
     }
 
     /**
-     * @notice See {BullosseumInterface-propose}
+     * @notice See {JungleInterface-propose}
      */
     function propose(string calldata newBaseURI, uint8 slotId)
         external
@@ -73,7 +73,7 @@ abstract contract BullosseumGovernance is BullosseumFields {
     }
 
     /**
-     * @notice See {BullosseumInterface-vote}
+     * @notice See {JungleInterface-vote}
      */
     function vote(uint256 proposalId, uint8[] calldata fieldIdList)
         external
@@ -84,8 +84,8 @@ abstract contract BullosseumGovernance is BullosseumFields {
 
         // verify every field
         for (uint8 fid = 0; fid < fieldCount; fid++) {
-            uint256 bullId = getBullOnField(fid);
-            require(ownerOf(bullId) == _msgSender(), "not owner");
+            uint256 junglerId = getJunglerOnField(fid);
+            require(ownerOf(junglerId) == _msgSender(), "not owner");
             require(_fieldGeneration[fid] < generation, "already voted");
             _fieldGeneration[fid] = generation;
         }
@@ -94,14 +94,14 @@ abstract contract BullosseumGovernance is BullosseumFields {
         target.voteCount += fieldCount;
 
         // reward voter
-        _bafContract.transfer(
+        _jgrContract.transfer(
             _msgSender(),
-            ((balanceOf(address(this)) * fieldCount) * 8) / 10 / GRASSLAND_SIZE
+            ((balanceOf(address(this)) * fieldCount) * 8) / 10 / ENV_CAPACITY
         );
     }
 
     /**
-     * @notice See {BullosseumInterface-startVote}
+     * @notice See {JungleInterface-startVote}
      */
     function startVote() external override proposingStage {
         require(
@@ -114,7 +114,7 @@ abstract contract BullosseumGovernance is BullosseumFields {
     }
 
     /**
-     * @notice See {BullosseumInterface-endVote}
+     * @notice See {JungleInterface-endVote}
      */
     function endVote() external override votingStage {
         require(
@@ -136,7 +136,7 @@ abstract contract BullosseumGovernance is BullosseumFields {
         Proposal memory winningProp = _proposals[maxIdx];
 
         // reward winner
-        _bafContract.transfer(
+        _jgrContract.transfer(
             winningProp.proposer,
             (balanceOf(address(this))) / 10
         );

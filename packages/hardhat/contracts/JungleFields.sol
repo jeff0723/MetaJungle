@@ -1,18 +1,18 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./BullosseumFighter.sol";
+import "./Jungler.sol";
 
 /**
- * @title Fields that allow bulls to occupy
+ * @title Fields that allow Jungler to camp
  * @author Justa Liang
  */
-abstract contract BullosseumFields is BullosseumFighter {
+abstract contract JungleFields is Jungler {
     /// @dev Max number of fields
-    uint8 internal constant GRASSLAND_SIZE = 100;
+    uint8 internal constant ENV_CAPACITY = 100;
 
-    /// @dev Map from field ID to bull ID
-    mapping(uint8 => uint256) private _bullIdOnField;
+    /// @dev Map from field ID to jungler ID
+    mapping(uint8 => uint256) private _junglerIdOnField;
 
     /**
      * @notice Stage of proposing or voting
@@ -41,32 +41,32 @@ abstract contract BullosseumFields is BullosseumFighter {
     }
 
     /**
-     * @notice See {BullosseumInterface-occupy}
+     * @notice See {JungleInterface-camp}
      */
-    function occupy(uint256 bullId, uint8 fieldId)
+    function camp(uint256 junglerId, uint8 fieldId)
         external
         override
-        checkOwner(bullId)
+        checkOwner(junglerId)
         proposingStage
     {
-        require(fieldId < GRASSLAND_SIZE, "out of grassland");
+        require(fieldId < ENV_CAPACITY, "out of grassland");
 
         // get attacker data
-        BullData storage attackerData = _bullData[bullId];
+        JunglerData storage attackerData = _junglerData[junglerId];
         require(!attackerData.onField, "already on field");
 
         // get defender data
-        uint256 defenderId = _bullIdOnField[fieldId];
-        BullData storage defenderData = _bullData[defenderId];
+        uint256 defenderId = _junglerIdOnField[fieldId];
+        JunglerData storage defenderData = _junglerData[defenderId];
 
         // attacker should be of this generation
-        require(attackerData.generation == generation, "bull too old");
+        require(attackerData.generation == generation, "jungler too old");
 
-        // if the defender bull is at open position or out of generation
+        // if the defender jungler is at open position or out of generation
         // then will be replaced regardless of net worth
         if (defenderData.closed && defenderData.generation == generation) {
             require(
-                attackerData.netWorth > defenderData.netWorth,
+                attackerData.power > defenderData.power,
                 "attacker can't overtake"
             );
         }
@@ -74,14 +74,14 @@ abstract contract BullosseumFields is BullosseumFighter {
         // update on-chain data
         defenderData.onField = false;
         attackerData.onField = true;
-        _bullIdOnField[fieldId] = bullId;
+        _junglerIdOnField[fieldId] = junglerId;
     }
 
     /**
-     * @notice Return bull ID given field ID
+     * @notice Return jungler ID given field ID
      */
-    function getBullOnField(uint8 fieldId) public view returns (uint256) {
-        require(fieldId < GRASSLAND_SIZE, "out of grassland");
-        return _bullIdOnField[fieldId];
+    function getJunglerOnField(uint8 fieldId) public view returns (uint256) {
+        require(fieldId < ENV_CAPACITY, "out of grassland");
+        return _junglerIdOnField[fieldId];
     }
 }
