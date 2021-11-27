@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import QuickStart from './components/QuickStart'
 import Collections from './components/Collections'
+import Ranking from './components/Ranking'
 import Account from "./components/Account";
 import "./style.css";
 
@@ -43,6 +44,9 @@ function App() {
             <Menu.Item key="collections">
               <NavLink to="/collections">👛 Collections</NavLink>
             </Menu.Item>
+            <Menu.Item key="ranking">
+              <NavLink to="/ranking">👛 Ranking</NavLink>
+            </Menu.Item>
           </Menu>
           <div>
             <Account />
@@ -52,7 +56,7 @@ function App() {
           <Routes>
             <Route path='/quickstart' element={<QuickStart />} />
             <Route path='/collections' element={<Collections />} />
-
+            <Route path='/ranking' element={<Ranking />} />
           </Routes>
         </div>
       </Router>
