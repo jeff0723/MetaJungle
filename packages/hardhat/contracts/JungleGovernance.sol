@@ -80,11 +80,11 @@ abstract contract JungleGovernance is JungleBush {
         Proposal storage target = _proposals[proposalId];
 
         // verify every bush
-        for (uint8 fid = 0; fid < bushCount; fid++) {
-            uint256 junglerId = getJunglerOnBush(fid);
+        for (uint8 bushId = 0; bushId < bushCount; bushId++) {
+            uint256 junglerId = _hideOnBush[bushId];
             require(ownerOf(junglerId) == _msgSender(), "not owner");
-            require(_bushGeneration[fid] < generation, "already voted");
-            _bushGeneration[fid] = generation;
+            require(_bushGeneration[bushId] < generation, "already voted");
+            _bushGeneration[bushId] = generation;
         }
 
         // update vote count

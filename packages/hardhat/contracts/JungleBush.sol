@@ -15,7 +15,7 @@ abstract contract JungleBush is Jungler {
     uint256 private constant REWARD_PER_SEC = 4e11;
 
     /// @dev Map from bush ID to jungler ID (Faker the GOAT!!!)
-    mapping(uint8 => uint256) private _hideOnBush;
+    mapping(uint8 => uint256) internal _hideOnBush;
 
     /// @dev Map from bush ID to update time
     mapping(uint8 => uint256) private _bushTimer;
@@ -134,8 +134,12 @@ abstract contract JungleBush is Jungler {
     /**
      * @notice Return jungler ID given bush ID
      */
-    function getJunglerOnBush(uint8 bushId) public view returns (uint256) {
+    function getJunglerOnBush(uint8 bushId)
+        public
+        view
+        returns (JunglerData memory)
+    {
         require(bushId < ENV_CAPACITY, "invalid bush ID");
-        return _hideOnBush[bushId];
+        return getJunglerData(_hideOnBush[bushId]);
     }
 }

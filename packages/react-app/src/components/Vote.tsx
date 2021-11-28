@@ -89,7 +89,7 @@ const Vote = (props: Props) => {
                 functionName: 'vote',
                 abi: MetaJungle__factory.abi,
                 params: {
-                    proposalId: proposalId,
+                    proposalId: proposalId.toString(),
                     bushIdList: walletVotableBushesList.slice(0, parseInt(number))
                 }
             }

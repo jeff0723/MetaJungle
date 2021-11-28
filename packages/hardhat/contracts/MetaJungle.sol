@@ -8,7 +8,7 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
     using Strings for uint40;
 
     //// @dev Max display power
-    uint40 private constant MAX_DISPLAY_POWER = 100;
+    uint40 private constant MAX_DISPLAY_POWER = 7243;
 
     /// @dev Setup PaymentSplitter
     constructor(
@@ -34,7 +34,7 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
         returns (string memory)
     {
         uint32 targetGeneration = _junglerData[tokenId].generation;
-        uint40 powerDisplay = uint40(_junglerData[tokenId].power) / 1e5;
+        uint40 powerDisplay = uint40(_junglerData[tokenId].power) / 1e3;
         if (powerDisplay > MAX_DISPLAY_POWER) {
             powerDisplay = MAX_DISPLAY_POWER;
         }

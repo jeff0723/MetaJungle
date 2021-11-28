@@ -39,7 +39,7 @@ const Bushes = (props: Props) => {
     return (
         <div>
             <Card>
-                <Button type='primary' onClick={() => { handleHideOnBush(1, 1) }}>hide on bush</Button>
+                <Button type='primary' onClick={() => { handleHideOnBush(6, 6) }}>hide on bush</Button>
             </Card>
         </div>
     )

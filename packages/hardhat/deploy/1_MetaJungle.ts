@@ -16,7 +16,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         from: deployer,
         args: [
             ensRegistryAddr, 
-            "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/",
+            "ipfs://QmRTLzaoAYSuiMVENbRpxSbrY7sgFz9K5WE5g8yvtxL485/",
             [deployer],
             [1],
         ],
