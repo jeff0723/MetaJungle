@@ -21,9 +21,11 @@ const mapOrderToImage = (order: number) => {
             return trunk;
         case 4:
             return bush;
+        default:
+            return bush;
     }
 }
-const bushes = Orders.map(item => mapOrderToImage(item));
+const bushes: string[] = Orders.map(item => mapOrderToImage(item));
 const styles = {
     card: {
         boxShadow: "0 0.5rem 1.2rem rgb(189 197 209 / 20%)",
@@ -37,11 +39,12 @@ const Bushes = (props: Props) => {
 
     const [isBushOpen, setIsBushOpen] = useState(false);
     const [openBushId, setOpenBushId] = useState(0);
+    const [openBushImage, setOpenBushImage] = useState<string>();
 
 
     return (
         <div>
-            <Card style={{ ...styles.card, minWidth: '680', width: '50vw', maxWidth: '875px' }} title={<Title>💰 Choose a Bush to Hide on</Title>}>
+            <Card style={{ ...styles.card, minWidth: '680px', width: '50vw', maxWidth: '875px' }} title={<Title>💰 Choose a Bush to Hide on</Title>}>
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '16px', backgroundColor: '#423206ff', padding: '16px' }}>
                     {/* <Button type='primary' onClick={() => { handleHideOnBush(1, 1) }}>hide on bush</Button>
                  */}
@@ -51,6 +54,7 @@ const Bushes = (props: Props) => {
                                 onClick={() => {
                                     setIsBushOpen(true)
                                     setOpenBushId(key)
+                                    setOpenBushImage(item)
                                 }}>
                                 <img src={item} height='136px' width='136px' alt='bush' />
                             </Card>
@@ -63,9 +67,9 @@ const Bushes = (props: Props) => {
                 onCancel={() => {
                     setIsBushOpen(false)
                     setOpenBushId(0)
+                    setOpenBushImage("")
                 }}>
-                {openBushId}
-                <Bush id={openBushId} />
+                <Bush id={openBushId} image={openBushImage} />
             </Modal>
 
         </div>
