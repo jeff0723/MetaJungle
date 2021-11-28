@@ -44,9 +44,9 @@ interface MetaJungleInterface {
     //-------------------------
 
     /**
-     * @notice Bush: Camp at certain field
+     * @notice Bush: Camp at certain bush
      * @param junglerId ID of the jungler
-     * @param bushId ID of the field on grassland
+     * @param bushId ID of the bush on grassland
      */
     function camp(uint256 junglerId, uint8 bushId) external;
 
@@ -64,7 +64,7 @@ interface MetaJungleInterface {
     /**
      * @notice Governance: Vote the proposals using owned bush
      * @param proposalId ID of the proposal
-     * @param bushIdList List of field ID that voter occupied
+     * @param bushIdList List of bush ID that voter occupied
      */
     function vote(uint256 proposalId, uint8[] calldata bushIdList) external;
 

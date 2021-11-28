@@ -17,9 +17,6 @@ abstract contract JungleGovernance is JungleBush {
     /// @dev Interval of voting stage
     uint256 private constant VOTE_INTERVAL = 3 days;
 
-    /// @dev Map from field ID to generation
-    mapping(uint8 => uint32) private _fieldGeneration;
-
     /// @dev Latest update time
     uint256 private _latestUpdateTime;
 
@@ -75,28 +72,28 @@ abstract contract JungleGovernance is JungleBush {
     /**
      * @notice See {JungleInterface-vote}
      */
-    function vote(uint256 proposalId, uint8[] calldata fieldIdList)
+    function vote(uint256 proposalId, uint8[] calldata bushIdList)
         external
         override
     {
-        uint8 fieldCount = uint8(fieldIdList.length);
+        uint8 bushCount = uint8(bushIdList.length);
         Proposal storage target = _proposals[proposalId];
 
-        // verify every field
-        for (uint8 fid = 0; fid < fieldCount; fid++) {
+        // verify every bush
+        for (uint8 fid = 0; fid < bushCount; fid++) {
             uint256 junglerId = getJunglerOnBush(fid);
             require(ownerOf(junglerId) == _msgSender(), "not owner");
-            require(_fieldGeneration[fid] < generation, "already voted");
-            _fieldGeneration[fid] = generation;
+            require(_bushGeneration[fid] < generation, "already voted");
+            _bushGeneration[fid] = generation;
         }
 
         // update vote count
-        target.voteCount += fieldCount;
+        target.voteCount += bushCount;
 
         // reward voter
         _jgrContract.transfer(
             _msgSender(),
-            ((balanceOf(address(this)) * fieldCount) * 8) / 10 / ENV_CAPACITY
+            ((balanceOf(address(this)) * bushCount) * 8) / 10 / ENV_CAPACITY
         );
     }
 
@@ -140,6 +137,9 @@ abstract contract JungleGovernance is JungleBush {
             winningProp.proposer,
             (balanceOf(address(this))) / 10
         );
+
+        // clear slot
+        delete _proposals;
 
         // evolve to next generation
         generation++;
