@@ -1,13 +1,13 @@
 
-import React, { useEffect, useState } from 'react';
+import { Button, Card, Input, Modal, Typography } from "antd";
+import { resolveIPFSLink } from 'helpers/formatters';
+import React, { useState } from 'react';
 import { useMoralis } from "react-moralis";
+import styled from 'styled-components';
 import { META_JUNGLE_ADDRESS } from '../constants/address';
 import { openNotificationWithIcon } from '../helpers/notification';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 import { MetaJungle__factory } from "../typechain";
-import { Card, Input, Typography, Button, Modal } from "antd";
-import styled from 'styled-components';
-import { resolveIPFSLink } from 'helpers/formatters';
 const { Title, Text } = Typography
 interface Props {
     id: number
