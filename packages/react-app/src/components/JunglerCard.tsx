@@ -197,7 +197,7 @@ const JunglerCard = ({ junglerProfile }: Props) => {
                                 ))}
                             </Select>
                             <Input placeholder="Set your leverage" value={leverage} onChange={(e) => { setLeverage(e.target.value) }} />
-                            <Text style={{ fontSize: '12px', fontStyle: 'italic' }}>*note: leverage can only between -128 ~ 127</Text>
+                            <Text style={{ fontSize: '12px', fontStyle: 'italic' }}>*note: can only between -128 ~ 127, real leverage range -12.8 ~ 12.7 </Text>
                             <Button style={{ borderRadius: '16px', background: '#1890ff', color: '#ffffff' }} onClick={handleOpen}>Open Position</Button>
                         </FlexColumn> :
                         <Button style={{ marginTop: '32px', borderRadius: '16px', background: '#1890ff', color: '#ffffff' }} onClick={handleClose}>Close Position</Button>
