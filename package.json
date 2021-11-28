@@ -11,6 +11,7 @@
     "react-app:start": "yarn workspace @bulls-and-bears/react-app start",
     "react-app:test": "yarn workspace @bulls-and-bears/react-app test",
     "start": "yarn workspace @bulls-and-bears/react-app start",
+    "build": "yarn workspace @bulls-and-bears/react-app build",
     "compile": "yarn workspace @bulls-and-bears/hardhat compile",
     "test": "yarn workspace @bulls-and-bears/hardhat test",
     "deploy": "yarn workspace @bulls-and-bears/hardhat deploy",
