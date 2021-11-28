@@ -31,9 +31,6 @@ const Ranking = (props) => {
     const { native } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
 
-    let openMap = new Map();
-    let closeMap = new Map();
-
     useEffect(() => {
         const getEvent = async () => {
             const options = {
