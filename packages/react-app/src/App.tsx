@@ -7,6 +7,7 @@ import {
 import QuickStart from './components/QuickStart'
 import Collections from './components/Collections'
 import Gank from './components/Gank'
+import Ranking from './components/Ranking'
 import Account from "./components/Account";
 import "./style.css";
 import Proposal from './components/Proposal'
@@ -69,14 +70,14 @@ function App() {
         </Header>
         <div style={styles.content}>
           <Routes>
+            <Route path='/' element={<QuickStart />} />
             <Route path='/quickstart' element={<QuickStart />} />
             <Route path='/collections' element={<Collections />} />
             <Route path='/gank' element={<Gank />} />
             <Route path='/proposal' element={<Proposal />} />
             <Route path='/vote' element={<Vote />} />
             <Route path='/hide-on-bush' element={<Bushes />} />
-
-            {/* <Route path='/ranking' element={<Rank/>}/> */}
+            <Route path='/ranking' element={<Ranking />} />
           </Routes>
         </div>
       </Router>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface Props {
-
+    id: number
 }
 
 const Bush = (props: Props) => {
