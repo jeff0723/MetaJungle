@@ -179,7 +179,7 @@ const JunglerCard = ({ junglerProfile }: Props) => {
                             <BoldText >Position: {profile.isOpen ? "Open" : "Closed"}</BoldText>
                             {profile.isOpen ?
                                 <>
-                                    <BoldText >Leverage: {profile.leverage}</BoldText>
+                                    <BoldText >Leverage: {profile.leverage / 10}</BoldText>
                                     <BoldText >Trading pair: {proxyToPairs[profile.proxy]}</BoldText>
                                     <BoldText >Open Price: {(profile.openPrice / 1e8).toFixed(2)}</BoldText>
                                 </> :
