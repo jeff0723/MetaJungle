@@ -75,13 +75,6 @@ const Bush = ({ id, image }: Props) => {
         }
 
     }
-    useEffect(() => {
-
-        if (chainId && walletAddress) {
-            getJunglerOnBush();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chainId, walletAddress])
     const handleCamp = () => {
         if (!campJunglerId || isNaN(parseInt(campJunglerId))) {
             openNotificationWithIcon('error', 'Input Error!', 'You need to enter number or enter number of Jungler ID you want to camp.')
@@ -99,6 +92,8 @@ const Bush = ({ id, image }: Props) => {
             Moralis.Web3.executeFunction(options).then(async () => {
                 openNotificationWithIcon("success", "Camp success", 'Succesffully camped on a bush.');
                 setCampJunglerId("");
+                getJunglerOnBush();
+
             })
         }
     }
@@ -115,6 +110,7 @@ const Bush = ({ id, image }: Props) => {
                 footer={null}
                 onCancel={() => {
                     setIsModalOpen(false)
+                    getJunglerOnBush();
 
                 }}>
                 {
