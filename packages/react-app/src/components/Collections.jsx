@@ -10,6 +10,7 @@ import { resolveIPFSLink } from '../helpers/formatters';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 import { JungleResource__factory as JGR_factory, MetaJungle__factory } from "../typechain";
 const { Text, Title } = Typography
+
 const AddCard = styled('div')`
     border: 2px dashed #e7eaf3;
     border-radius: 1rem;
@@ -90,7 +91,7 @@ const mapProfileArrayToObject = (profileArray) => {
 }
 const Collections = () => {
     const { isWeb3Enabled, web3, enableWeb3, isAuthenticated } = useMoralis();
-    const { account, native, token } = useMoralisWeb3Api();
+    const { native, token } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
     const [metaJungleAddress, setMetaJungleAddress] = useState("");
     const [jungleResourceAdrress, setJungleResourceAddress] = useState("")
@@ -109,17 +110,6 @@ const Collections = () => {
             setAllowance(allowance);
             console.log("allowance:", allowance)
         }
-        const fetchNFT = async () => {
-            const options = {
-                chain: chainId,
-                token_address: metaJungleAddress,
-                address: walletAddress
-            }
-            console.log('owner: ', walletAddress)
-            console.log("metaJungleAddress: ", '0xa3206Ff17ACb969e7AA1d0F7c092AD940A85e20A')
-            const bullContractNFTs = await account.getNFTsForContract(options)
-            console.log("bullContractNFTs: ", bullContractNFTs);
-        }
         const setJunglerProfileListAsync = async () => {
             setJunglerProfileList(await getJunglerList());
         }
@@ -133,17 +123,11 @@ const Collections = () => {
         if (jungleResourceAdrress && walletAddress && chainId) {
             getAllowance()
         }
-        if (walletAddress && chainId && metaJungleAddress) {
-            console.log("start to fetch")
-            fetchNFT();
-        }
-        if (!isWeb3Enabled) {
-            enableWeb3();
-        }
         if (chainId && metaJungleAddress && walletAddress) {
             setJunglerProfileListAsync();
         }
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chainId, walletAddress, metaJungleAddress, jungleResourceAdrress])
 
     const getJunglerList = async () => {
@@ -193,14 +177,7 @@ const Collections = () => {
             ));
         }
     }
-    console.log("walletAddress: ", walletAddress)
-    console.log("chainId: ", chainId)
-    console.log("metaJungleAddress: ", metaJungleAddress)
-    console.log("metaJungleAddress: ", jungleResourceAdrress)
-    console.log('isWeb3Enabled: ', isWeb3Enabled);
-    console.log("isAuthenticated: ", isAuthenticated);
-    console.log("allowance", allowance);
-    console.log("junglerProfileList", junglerProfileList)
+
     return (
         <div>
             <Card style={styles.card} title={<Title level={2}>💰 Inventory</Title>}>
@@ -220,8 +197,8 @@ const Collections = () => {
                             padding: '16px',
                         }}>
                             <PlusOutlined style={{ fontSize: '24px' }} />
-                            <Text style={{ fontSize: '21px', fontWeight: 'bold', marginTop: '10px' }}>Breed your first bull!</Text>
-                            <Text>This is the first step to collecting and breeding bulls</Text>
+                            <Text style={{ fontSize: '21px', fontWeight: 'bold', marginTop: '10px' }}>{!junglerProfileList.length ? "Summon your first Jungler!" : "Summon a Jungler"}</Text>
+                            <Text>{!junglerProfileList.length ? "This is the first step to participate meta jungle and fight for glory." : "Click button to summon a Jungler."}</Text>
                         </div>
                     </AddCard>
                     {renderJunglerList()}

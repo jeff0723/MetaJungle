@@ -17,7 +17,7 @@ const QuickStart = (props: Props) => {
     return (
         <div>
             <Card style={styles.card} title={<Title level={2}>📝 How To Play</Title>}>
-                <Title level={3}>🐂 Breed a Bull</Title>
+                <Title level={3}>🐂 Summon a Jungler</Title>
                 <ul>
                     <li><Text>Deposit 1000 amission fee ($BAF) to start a position</Text></li>
                     <li><Text>Select a trading pair to open a posistion</Text></li>

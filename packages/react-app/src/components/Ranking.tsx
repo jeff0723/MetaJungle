@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
+import { META_JUNGLE_ADDRESS } from '../constants/address';
 import CURRENT_JUNGLER_STATE_ABI from '../events/CurrentJunglerState.json';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
-import { JUNGLE_RESOURCE, META_JUNGLE_ADDRESS } from '../constants/address';
 
 interface Props {
 
 }
 
 const Ranking = (props: Props) => {
-    const { Moralis, authenticate, isWeb3Enabled, web3, enableWeb3, isAuthenticated, } = useMoralis();
-    const { account, native, token } = useMoralisWeb3Api();
+    const { Moralis, } = useMoralis();
+    const { native } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
     useEffect(() => {
         const getEvent = async () => {

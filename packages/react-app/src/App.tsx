@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import QuickStart from './components/QuickStart'
 import Collections from './components/Collections'
-import Ranking from './components/Ranking'
+import Gank from './components/Gank'
 import Account from "./components/Account";
 import "./style.css";
 
@@ -39,13 +39,16 @@ function App() {
             mode="horizontal"
             defaultSelectedKeys={["quickstart"]}>
             <Menu.Item key="quickstart">
-              <NavLink to="/quickstart">🚀 Quick Start</NavLink>
+              <NavLink to="/quickstart">🚀  Quick Start</NavLink>
             </Menu.Item>
             <Menu.Item key="collections">
-              <NavLink to="/collections">👛 Collections</NavLink>
+              <NavLink to="/collections">🖼  Collections</NavLink>
             </Menu.Item>
-            <Menu.Item key="ranking">
-              <NavLink to="/ranking">👛 Ranking</NavLink>
+            <Menu.Item key="gank">
+              <NavLink to="/gank">👛 Gank</NavLink>
+            </Menu.Item>
+            <Menu.Item key="hide-on-bush">
+              <NavLink to="/hide-on-bush">👛 Hide-On-Bush</NavLink>
             </Menu.Item>
           </Menu>
           <div>
@@ -56,7 +59,7 @@ function App() {
           <Routes>
             <Route path='/quickstart' element={<QuickStart />} />
             <Route path='/collections' element={<Collections />} />
-            <Route path='/ranking' element={<Ranking />} />
+            <Route path='/gank' element={<Gank />} />
           </Routes>
         </div>
       </Router>
