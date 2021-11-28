@@ -92,7 +92,11 @@ abstract contract JungleBush is Jungler {
             if (reward > selfFund) {
                 reward = selfFund;
             }
-            transferFrom(address(this), ownerOf(defenderId), reward);
+            _jgrContract.transferFrom(
+                address(this),
+                ownerOf(defenderId),
+                reward
+            );
         }
     }
 

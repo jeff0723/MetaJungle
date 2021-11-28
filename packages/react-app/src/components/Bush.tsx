@@ -62,7 +62,7 @@ const Bush = ({ id, image }: Props) => {
             address: META_JUNGLE_ADDRESS[chainId],
             function_name: "getJunglerProfileOnBush",
             abi: MetaJungle__factory.abi,
-            params: { bushId: id }
+            params: { bushId: id.toString() }
         }
         const response = await (Moralis.Web3API.native.runContractFunction(options).catch(err => { console.log(err) }));
         console.log('catch');
