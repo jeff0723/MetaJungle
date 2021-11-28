@@ -83,13 +83,12 @@ const Vote = (props: Props) => {
         }
 
         if (chainId && walletAddress) {
-            Moralis.Web3.enableWeb3();
             const options = {
                 contractAddress: META_JUNGLE_ADDRESS[chainId],
                 functionName: 'vote',
                 abi: MetaJungle__factory.abi,
                 params: {
-                    proposalId: proposalId,
+                    proposalId: proposalId.toString(),
                     bushIdList: walletVotableBushesList.slice(0, parseInt(number))
                 }
             }
@@ -100,7 +99,6 @@ const Vote = (props: Props) => {
         }
 
     }
-    console.log("votable: ", walletVotableBushesList);
     return (
         <div>
             <Card style={{ ...styles.card, minWidth: '375px', width: '50vw', maxWidth: '875px' }} title={<Title level={2}>💰 Vote for a Proposal</Title>}>
