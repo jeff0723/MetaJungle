@@ -10,6 +10,7 @@ import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProv
 import { MetaJungle__factory } from "../typechain";
 import { proxyToPairs } from '../constants/proxyToPairs'
 import { LoadingOutlined } from '@ant-design/icons';
+import { openNotificationWithIcon } from '../helpers/notification'
 const { Text } = Typography
 const { Option } = Select;
 
@@ -67,21 +68,6 @@ const fetchMetaData = async (tokenURI: string) => {
     return metaData;
 }
 
-const openNotificationWithIcon = (type: string, message: string, description: string) => {
-    switch (type) {
-        case "warning":
-            notification['warning']({
-                message: message,
-                description: description,
-            });
-            break;
-        case "success":
-            notification['success']({
-                message: message,
-                description: description,
-            });
-    }
-};
 
 const mapProfileArrayToObject = (profileArray: any) => {
     return {
@@ -113,7 +99,6 @@ const JunglerCard = ({ junglerProfile }: Props) => {
             params: { junglerId: junglerProfile.id }
         }
         const response = await Moralis.Web3API.native.runContractFunction(options);
-        console.log('jungler data:', response)
         return response
     }
     useEffect(() => {

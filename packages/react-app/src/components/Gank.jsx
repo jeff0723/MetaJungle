@@ -1,6 +1,6 @@
-import React from 'react'
-import { Card, notification, Typography, Table, Button } from "antd";
-const { Column, Space } = Table
+import { Button, Card, Table, Typography } from "antd";
+import React from 'react';
+const { Column } = Table
 const { Title } = Typography
 const styles = {
     card: {
@@ -57,7 +57,7 @@ const columns = [
 
 function Gank() {
     const handleReport = (id) => {
-
+        alert(id)
     }
     return (
         <div>

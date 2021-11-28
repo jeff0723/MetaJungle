@@ -9,7 +9,8 @@ import Collections from './components/Collections'
 import Gank from './components/Gank'
 import Account from "./components/Account";
 import "./style.css";
-
+import Proposal from './components/Proposal'
+import Vote from './components/Vote'
 const { Header } = Layout;
 const { Title } = Typography;
 const styles = {
@@ -50,6 +51,12 @@ function App() {
             <Menu.Item key="hide-on-bush">
               <NavLink to="/hide-on-bush">👛 Hide-On-Bush</NavLink>
             </Menu.Item>
+            <Menu.Item key="propose">
+              <NavLink to="/proposal">👛 Proposal</NavLink>
+            </Menu.Item>
+            <Menu.Item key="vote">
+              <NavLink to="/vote">👛 Vote</NavLink>
+            </Menu.Item>
           </Menu>
           <div>
             <Account />
@@ -60,6 +67,9 @@ function App() {
             <Route path='/quickstart' element={<QuickStart />} />
             <Route path='/collections' element={<Collections />} />
             <Route path='/gank' element={<Gank />} />
+            <Route path='/proposal' element={<Proposal />} />
+            <Route path='/vote' element={<Vote />} />
+
           </Routes>
         </div>
       </Router>
