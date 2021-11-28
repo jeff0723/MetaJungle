@@ -12,7 +12,7 @@ abstract contract JungleBush is Jungler {
     uint8 internal constant ENV_CAPACITY = 100;
 
     /// @dev Reward per second
-    uint256 private constant REWARD_PER_SEC = 1e11;
+    uint256 private constant REWARD_PER_SEC = 4e11;
 
     /// @dev Map from bush ID to jungler ID (Faker the GOAT!!!)
     mapping(uint8 => uint256) private _hideOnBush;
@@ -119,6 +119,7 @@ abstract contract JungleBush is Jungler {
         bushIdList = new uint8[](votableBushCount);
         uint8 idx = 0;
         for (uint8 bushId = 0; bushId < ENV_CAPACITY; bushId++) {
+            junglerId = _hideOnBush[bushId];
             if (
                 _exists(junglerId) &&
                 ownerOf(junglerId) == owner &&

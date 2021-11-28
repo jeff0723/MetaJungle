@@ -138,6 +138,9 @@ abstract contract JungleGovernance is JungleBush {
             (balanceOf(address(this))) / 10
         );
 
+        // clear slot
+        delete _proposals;
+
         // evolve to next generation
         generation++;
         _baseURIofGeneration[generation] = winningProp.baseURI;
