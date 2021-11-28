@@ -19,38 +19,38 @@ const QuickStart = (props: Props) => {
             <Card style={styles.card} title={<Title level={2}>📝 How To Play</Title>}>
                 <Title level={3}>🐂 Summon a Jungler</Title>
                 <ul>
-                    <li><Text>Deposit 1000 amission fee ($BAF) to start a position</Text></li>
-                    <li><Text>Select a trading pair to open a posistion</Text></li>
-                    <li><Text>Each position is a ERC-721 token, which presenting a bull that will grow up with your trading return</Text></li>
+                    <li><Text>Deposit 1 uint of jungle resource ($JGR) in the vault to create an account</Text></li>
+                    <li><Text>Each account is a ERC-721 token, which presenting a jungler that will grow up with your trading return</Text></li>
+                    <li><Text>Select a trading pair to open a position</Text></li>
                     <li><Text>When there is a change of return, the metadata of your NFT will also change</Text></li>
-                    <li><Text>You may also use leverage to increase your breeding speed</Text></li>
+                    <li><Text>You may also use leverage to increase your return</Text></li>
                 </ul>
                 <Divider />
-                <Title level={3}>⚓ Report a bankrupt bull</Title>
+                <Title level={3}>⚓ Gank a bankrupt jungler</Title>
                 <ul>
-                    <li><Text>You can report an bull if it is bankrupted</Text></li>
-                    <li><Text>After the report success, reporter will be reward 100 amission fee</Text></li>
+                    <li><Text>You can gank an jungler if it is bankrupted</Text></li>
+                    <li><Text>After ganking successfully, ganker will be be rewarded with 0.1 $JGR</Text></li>
                 </ul>
                 <Divider />
-                <Title level={3}>🏝️ Occupy a field</Title>
+                <Title level={3}>🏝️ Hide on bush</Title>
                 <ul>
-                    <li><Text>When you have a animal breed, you can occupy a field</Text></li>
-                    <li><Text>You might be kicked out from your field if other stronger animal comes</Text></li>
                     <li><Text>There are only 100 bushes</Text></li>
+                    <li><Text>When you have a powerful jungler, you can use it to camp a bush</Text></li>
+                    <li><Text>You might be kicked out from your bush if other stronger jungler comes</Text></li>
                 </ul>
                 <Divider />
                 <Title level={3}>🌱 Generations</Title>
                 <ul>
-                    <li><Text>Each generation lasts 25 days</Text></li>
-                    <li><Text>After the end of a generation, animals field will be reward 80% of value locked in this generation</Text></li>
-                    <li><Text>10% of value locked will be giving to winner of proposal</Text></li>
+                    <li><Text>Each generation lasts 28 days, 25 of fighting stage and 3 days voting</Text></li>
+                    <li><Text>After the end of the fighting stage, camping junglers will share 80% of $JGR in the vault if they vote</Text></li>
+                    <li><Text>After the end of the voting stage, winner amoung proposals get 10% of $JGR in the vault</Text></li>
                 </ul>
                 <Divider />
                 <Title level={3}>📃 Proposals</Title>
                 <ul>
-                    <li><Text>Everyone can file a proposal for the animal skin of next generation</Text></li>
-                    <li><Text>Any animal occupying a field and vote for the landlord to determine their future look</Text></li>
-                    <li><Text>The end of generation reward can only be claimed through voting for a proposal</Text></li>
+                    <li><Text>Everyone can file a proposal for the jungler skin of next generation</Text></li>
+                    <li><Text>Camping junglers vote and determine their future look</Text></li>
+                    <li><Text>Better vote a nice one for nex generation to make $JGR more valuable</Text></li>
                 </ul>
                 <Divider />
             </Card>
