@@ -378,6 +378,25 @@ const _abi = [
         name: "owner",
         type: "address",
       },
+    ],
+    name: "getVotableBushesByOwner",
+    outputs: [
+      {
+        internalType: "uint8[]",
+        name: "bushIdList",
+        type: "uint8[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "operator",
@@ -703,7 +722,7 @@ const _abi = [
       },
       {
         internalType: "uint8[]",
-        name: "fieldIdList",
+        name: "bushIdList",
         type: "uint8[]",
       },
     ],

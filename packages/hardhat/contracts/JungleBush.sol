@@ -20,6 +20,9 @@ abstract contract JungleBush is Jungler {
     /// @dev Map from bush ID to update time
     mapping(uint8 => uint256) private _bushTimer;
 
+    /// @dev Map from bush ID to generation
+    mapping(uint8 => uint32) internal _bushGeneration;
+
     /**
      * @notice Stage of proposing or voting
      */
@@ -55,7 +58,7 @@ abstract contract JungleBush is Jungler {
         checkOwner(junglerId)
         proposingStage
     {
-        require(bushId < ENV_CAPACITY, "out of grassland");
+        require(bushId < ENV_CAPACITY, "invalid bush ID");
 
         // get attacker data
         JunglerData storage attackerData = _junglerData[junglerId];
@@ -94,10 +97,44 @@ abstract contract JungleBush is Jungler {
     }
 
     /**
+     * @notice Return votable bushes given owner
+     */
+    function getVotableBushesByOwner(address owner)
+        public
+        view
+        returns (uint8[] memory bushIdList)
+    {
+        uint8 votableBushCount = 0;
+        uint256 junglerId;
+        for (uint8 bushId = 0; bushId < ENV_CAPACITY; bushId++) {
+            junglerId = _hideOnBush[bushId];
+            if (
+                _exists(junglerId) &&
+                ownerOf(junglerId) == owner &&
+                _bushGeneration[bushId] != generation
+            ) {
+                votableBushCount++;
+            }
+        }
+        bushIdList = new uint8[](votableBushCount);
+        uint8 idx = 0;
+        for (uint8 bushId = 0; bushId < ENV_CAPACITY; bushId++) {
+            if (
+                _exists(junglerId) &&
+                ownerOf(junglerId) == owner &&
+                _bushGeneration[bushId] != generation
+            ) {
+                bushIdList[idx] = bushId;
+                idx++;
+            }
+        }
+    }
+
+    /**
      * @notice Return jungler ID given bush ID
      */
     function getJunglerOnBush(uint8 bushId) public view returns (uint256) {
-        require(bushId < ENV_CAPACITY, "out of grassland");
+        require(bushId < ENV_CAPACITY, "invalid bush ID");
         return _hideOnBush[bushId];
     }
 }

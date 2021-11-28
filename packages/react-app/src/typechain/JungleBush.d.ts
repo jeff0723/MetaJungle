@@ -32,6 +32,7 @@ interface JungleBushInterface extends ethers.utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getJunglerData(uint256)": FunctionFragment;
     "getJunglerOnBush(uint8)": FunctionFragment;
+    "getVotableBushesByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "open(uint256,bytes32,int8)": FunctionFragment;
@@ -79,6 +80,10 @@ interface JungleBushInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getJunglerOnBush",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotableBushesByOwner",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -155,6 +160,10 @@ interface JungleBushInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getJunglerOnBush",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getVotableBushesByOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -360,6 +369,11 @@ export class JungleBush extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getVotableBushesByOwner(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<[number[]] & { bushIdList: number[] }>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -511,6 +525,11 @@ export class JungleBush extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getVotableBushesByOwner(
+    owner: string,
+    overrides?: CallOverrides
+  ): Promise<number[]>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -647,6 +666,11 @@ export class JungleBush extends BaseContract {
       bushId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getVotableBushesByOwner(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<number[]>;
 
     isApprovedForAll(
       owner: string,
@@ -896,6 +920,11 @@ export class JungleBush extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getVotableBushesByOwner(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1038,6 +1067,11 @@ export class JungleBush extends BaseContract {
 
     getJunglerOnBush(
       bushId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVotableBushesByOwner(
+      owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

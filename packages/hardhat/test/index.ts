@@ -66,19 +66,19 @@ describe("MetaJungle", function () {
     const junglerId3 = await jungleContract.tokenOfOwnerByIndex(player1.address, 1);
     console.log("-- player1 has jungler#"+junglerId3.toString());
 
-    // Player1 open jungler#0 in pair ETH/USD with leverage 1
-    console.log("\nPlayer1 open jungler#0 in ETH/USD with leverage 1");
+    // Player1 open jungler#1 in pair ETH/USD with leverage 1
+    console.log("\nPlayer1 open jungler#1 in ETH/USD with leverage 1");
     tx = await jungleContract.connect(player1).open(junglerId1, namehash("eth-usd.data.eth"), 10);
     await tx.wait();
     junglerData = await jungleContract.getJunglerData(junglerId1);
-    console.log("-- jungler#0 openPrice", junglerData.openPrice.div(priceDivider).toNumber(), "leverage:", junglerData.leverage);
+    console.log("-- jungler#1 openPrice", junglerData.openPrice.div(priceDivider).toNumber(), "leverage:", junglerData.leverage);
     
-    // Player1 open jungler#2 in pair ETH/USD with leverage 5
-    console.log("\nPlayer1 open jungler#2 in ETH/USD with leverage 5");
+    // Player1 open jungler#1 in pair ETH/USD with leverage 5
+    console.log("\nPlayer1 open jungler#1 in ETH/USD with leverage 5");
     tx = await jungleContract.connect(player1).open(junglerId3, namehash("eth-usd.data.eth"), 50);
     await tx.wait();
     junglerData = await jungleContract.getJunglerData(junglerId3);
-    console.log("-- jungler#2 openPrice", junglerData.openPrice.div(priceDivider).toNumber(), "leverage:", junglerData.leverage);
+    console.log("-- jungler#1 openPrice", junglerData.openPrice.div(priceDivider).toNumber(), "leverage:", junglerData.leverage);
 
     // ETH/USD price rise 20%
     console.log("\nETH/USD rise 20%");
@@ -88,18 +88,27 @@ describe("MetaJungle", function () {
     console.log("-- ETH/USD:", previousPrice.div(priceDivider).toNumber(),
                   "=>", (await ethPriceFeed.latestAnswer()).div(priceDivider).toNumber());
 
-    // Player1 close jungler#0 position
-    console.log("\nPlayer1 close jungler#0");
+    // Player1 close jungler#1 position
+    console.log("\nPlayer1 close jungler#1 position");
     tx = await jungleContract.connect(player1).close(junglerId1);
     await tx.wait();
     junglerData = await jungleContract.getJunglerData(junglerId1);
-    console.log("-- jungler#0 power:", junglerData.power);
+    console.log("-- jungler#1 power:", junglerData.power);
 
-    // Player1 close jungler#2 position
-    console.log("\nPlayer1 close jungler#2");
+    // Player1 close jungler#1 position
+    console.log("\nPlayer1 close jungler#1 position");
     tx = await jungleContract.connect(player1).close(junglerId3);
     await tx.wait();
     junglerData = await jungleContract.getJunglerData(junglerId3);
-    console.log("-- jungler#2 power:", junglerData.power);
+    console.log("-- jungler#1 power:", junglerData.power);
+  
+    // Player1 use jungler#1 to camp bush#5 and jungler#3 to bush#6
+    console.log("\nPlayer1 use jungler#1 to camp at bush#5");
+    tx = await jungleContract.connect(player1).camp(junglerId1, 5);
+    await tx.wait();
+    tx = await jungleContract.connect(player1).camp(junglerId3, 6);
+    await tx.wait();
+    const player1Bushes = await jungleContract.getVotableBushesByOwner(player1.address);
+    console.log("-- Player1 votable bushes:", player1Bushes.toString());
   });
 });

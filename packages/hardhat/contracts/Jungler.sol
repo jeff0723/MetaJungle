@@ -39,7 +39,7 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
         // state
         uint32 generation; // the generation in which the jungler bred
         bool isOpen; // if position is open
-        bool isCampping; // if jungle is campping
+        bool isCampping; // if jungler is campping
         int40 power; // net worth of the jungler
         // position
         address proxy; // proxy of Chainlink price feed

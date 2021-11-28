@@ -36,6 +36,7 @@ interface MetaJungleInterface extends ethers.utils.Interface {
     "getJunglerOnBush(uint8)": FunctionFragment;
     "getJunglerProfile(uint256)": FunctionFragment;
     "getOwnerJunglerList(address)": FunctionFragment;
+    "getVotableBushesByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "open(uint256,bytes32,int8)": FunctionFragment;
@@ -104,6 +105,10 @@ interface MetaJungleInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getOwnerJunglerList",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotableBushesByOwner",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -209,6 +214,10 @@ interface MetaJungleInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getOwnerJunglerList",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getVotableBushesByOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -539,6 +548,11 @@ export class MetaJungle extends BaseContract {
       }
     >;
 
+    getVotableBushesByOwner(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<[number[]] & { bushIdList: number[] }>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -645,7 +659,7 @@ export class MetaJungle extends BaseContract {
 
     vote(
       proposalId: BigNumberish,
-      fieldIdList: BigNumberish[],
+      bushIdList: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -772,6 +786,11 @@ export class MetaJungle extends BaseContract {
     })[]
   >;
 
+  getVotableBushesByOwner(
+    owner: string,
+    overrides?: CallOverrides
+  ): Promise<number[]>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -872,7 +891,7 @@ export class MetaJungle extends BaseContract {
 
   vote(
     proposalId: BigNumberish,
-    fieldIdList: BigNumberish[],
+    bushIdList: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -991,6 +1010,11 @@ export class MetaJungle extends BaseContract {
       })[]
     >;
 
+    getVotableBushesByOwner(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<number[]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1084,7 +1108,7 @@ export class MetaJungle extends BaseContract {
 
     vote(
       proposalId: BigNumberish,
-      fieldIdList: BigNumberish[],
+      bushIdList: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1307,6 +1331,11 @@ export class MetaJungle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getVotableBushesByOwner(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1413,7 +1442,7 @@ export class MetaJungle extends BaseContract {
 
     vote(
       proposalId: BigNumberish,
-      fieldIdList: BigNumberish[],
+      bushIdList: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -1477,6 +1506,11 @@ export class MetaJungle extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getOwnerJunglerList(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVotableBushesByOwner(
       owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1596,7 +1630,7 @@ export class MetaJungle extends BaseContract {
 
     vote(
       proposalId: BigNumberish,
-      fieldIdList: BigNumberish[],
+      bushIdList: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
