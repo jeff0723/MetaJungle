@@ -466,7 +466,19 @@ export class MetaJungle extends BaseContract {
     getJunglerOnBush(
       bushId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<
+      [
+        [number, boolean, boolean, number, string, BigNumber, number] & {
+          generation: number;
+          isOpen: boolean;
+          isCampping: boolean;
+          power: number;
+          proxy: string;
+          openPrice: BigNumber;
+          leverage: number;
+        }
+      ]
+    >;
 
     getJunglerProfile(
       junglerId: BigNumberish,
@@ -730,7 +742,17 @@ export class MetaJungle extends BaseContract {
   getJunglerOnBush(
     bushId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<
+    [number, boolean, boolean, number, string, BigNumber, number] & {
+      generation: number;
+      isOpen: boolean;
+      isCampping: boolean;
+      power: number;
+      proxy: string;
+      openPrice: BigNumber;
+      leverage: number;
+    }
+  >;
 
   getJunglerProfile(
     junglerId: BigNumberish,
@@ -954,7 +976,17 @@ export class MetaJungle extends BaseContract {
     getJunglerOnBush(
       bushId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [number, boolean, boolean, number, string, BigNumber, number] & {
+        generation: number;
+        isOpen: boolean;
+        isCampping: boolean;
+        power: number;
+        proxy: string;
+        openPrice: BigNumber;
+        leverage: number;
+      }
+    >;
 
     getJunglerProfile(
       junglerId: BigNumberish,

@@ -363,9 +363,46 @@ const _abi = [
     name: "getJunglerOnBush",
     outputs: [
       {
-        internalType: "uint256",
+        components: [
+          {
+            internalType: "uint32",
+            name: "generation",
+            type: "uint32",
+          },
+          {
+            internalType: "bool",
+            name: "isOpen",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isCampping",
+            type: "bool",
+          },
+          {
+            internalType: "int40",
+            name: "power",
+            type: "int40",
+          },
+          {
+            internalType: "address",
+            name: "proxy",
+            type: "address",
+          },
+          {
+            internalType: "int256",
+            name: "openPrice",
+            type: "int256",
+          },
+          {
+            internalType: "int8",
+            name: "leverage",
+            type: "int8",
+          },
+        ],
+        internalType: "struct Jungler.JunglerData",
         name: "",
-        type: "uint256",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
