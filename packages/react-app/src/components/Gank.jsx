@@ -83,7 +83,7 @@ function Gank() {
                 id: parseInt(key, 10),
                 power: parseInt(value[3], 10) / 1000,
                 proxy: proxyToPairs[value[4]],
-                openPrice: parseInt(value[5], 10) / 1000000,
+                openPrice: parseInt(value[5], 10) / 1e8,
                 leverage: parseInt(value[6], 10) / 10
             });
         });
