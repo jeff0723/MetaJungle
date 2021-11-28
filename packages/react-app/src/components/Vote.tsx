@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, List, Typography, Avatar, Button, Form, Input, } from "antd";
+import { Card, List, Typography, Avatar, Button, Modal, Form, Input } from "antd";
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { META_JUNGLE_ADDRESS } from '../constants/address';
 import { MetaJungle__factory } from "../typechain";
@@ -9,7 +9,7 @@ import { utils } from 'ethers'
 import { openNotificationWithIcon } from '../helpers/notification'
 import { resolveIPFSLink, getEllipsisTxt } from '../helpers/formatters'
 import { UserOutlined } from '@ant-design/icons';
-const { Title } = Typography
+const { Title, Text } = Typography
 
 interface Props {
 
@@ -40,6 +40,10 @@ const Vote = (props: Props) => {
     const { Moralis } = useMoralis();
     const { walletAddress, chainId } = useMoralisDapp();
     const [proposalList, setProposalList] = useState<ProposalData[]>();
+    const [walletVotableBushesList, setWalleVotableBushesList] = useState([]);
+    const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
+    const [voteAmount, setVoteAmount] = useState("");
+    const [proposalId, setProposalId] = useState(0);
     useEffect(() => {
         const getAllProposals = async () => {
             if (chainId && walletAddress) {
@@ -53,15 +57,56 @@ const Vote = (props: Props) => {
                 setProposalList(response.map((item) => mapArrayToProposal(item)));
             }
         }
-        getAllProposals();
+        const getVotableList = async () => {
+            if (chainId && walletAddress) {
+                const options = {
+                    chain: chainId,
+                    address: META_JUNGLE_ADDRESS[chainId],
+                    function_name: 'getVotableBushesByOwner',
+                    abi: MetaJungle__factory.abi,
+                    params: {
+                        owner: walletAddress
+                    }
+                };
+                let response = (await Moralis.Web3API.native.runContractFunction(options).then(response => response)) as [];
+                setWalleVotableBushesList(response);
+            }
+        }
 
-    })
-    const handleVote = (id: number) => {
-        // if(chainId)
+        getAllProposals();
+        getVotableList();
+    }, [walletAddress])
+
+    const handleVote = (number: string) => {
+        if (!number || isNaN(parseInt(number))) {
+            openNotificationWithIcon('error', 'Input Error!', 'You need to enter number or enter amout you want to vote.')
+        }
+
+        if (chainId && walletAddress) {
+            Moralis.Web3.enableWeb3();
+            const options = {
+                contractAddress: META_JUNGLE_ADDRESS[chainId],
+                functionName: 'vote',
+                abi: MetaJungle__factory.abi,
+                params: {
+                    proposalId: proposalId,
+                    bushIdList: walletVotableBushesList.slice(0, parseInt(number))
+                }
+            }
+            Moralis.Web3.executeFunction(options).then(async () => {
+                openNotificationWithIcon("success", "Vote success", 'Succesffully vote for a proposal.');
+                setProposalId(0);
+            })
+        }
+
     }
+    console.log("votable: ", walletVotableBushesList);
     return (
         <div>
             <Card style={{ ...styles.card, minWidth: '375px', width: '50vw', maxWidth: '875px' }} title={<Title level={2}>💰 Vote for a Proposal</Title>}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Text>Your Votes: {walletVotableBushesList.length}</Text>
+                </div>
                 <List
                     dataSource={proposalList}
                     renderItem={(item, index) => (
@@ -75,7 +120,10 @@ const Vote = (props: Props) => {
                                 <span>{utils.formatEther(item.bid.toString())} ETH</span>
                                 <span>{parseInt(utils.formatEther(item.voteCount.toString()))} Vote(s)</span>
                                 <a href={resolveIPFSLink(item.baseURI)} target="_blank" rel="noreferrer">View Proposal</a>
-                                <Button type="primary" style={{ borderRadius: '16px' }} onClick={() => { handleVote(index) }}>Vote</Button>
+                                <Button type="primary" style={{ borderRadius: '16px' }} onClick={() => {
+                                    setIsVoteModalOpen(true)
+                                    setProposalId(index)
+                                }}>Vote</Button>
                             </div>
                         </List.Item>
                     )}
@@ -83,7 +131,22 @@ const Vote = (props: Props) => {
 
                 </List>
             </Card>
-        </div>
+            <Modal
+                visible={isVoteModalOpen}
+                footer={null}
+                onCancel={() => setIsVoteModalOpen(false)}
+                title={<Text>Submit your vote(s)</Text>}
+                width='375px'
+            >
+                <div>
+                    <Text>Number to Vote:</Text>
+                    <Input placeholder='votes' style={{ width: '300px', marginBottom: '32px' }} value={voteAmount} onChange={(e) => setVoteAmount(e.target.value)} /><br />
+                    <Button type="primary" style={{ borderRadius: '16px' }} onClick={() => { handleVote(voteAmount) }}>
+                        Submit
+                    </Button>
+                </div>
+            </Modal>
+        </div >
     )
 }
 

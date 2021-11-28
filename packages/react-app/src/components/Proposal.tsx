@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { Card, List, Typography, Avatar, Button, Form, Input, } from "antd";
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { META_JUNGLE_ADDRESS } from '../constants/address';
-import { MetaJungle__factory } from "../typechain";
+import { Button, Card, Form, Input, Typography } from "antd";
+import { utils } from 'ethers';
+import React from 'react';
 import { useMoralis } from "react-moralis";
+import { META_JUNGLE_ADDRESS } from '../constants/address';
+import { openNotificationWithIcon } from '../helpers/notification';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
-import { utils } from 'ethers'
-import { openNotificationWithIcon } from '../helpers/notification'
-import { resolveIPFSLink, getEllipsisTxt } from '../helpers/formatters'
-import { UserOutlined } from '@ant-design/icons';
+import { MetaJungle__factory } from "../typechain";
 const { Title } = Typography
 interface Props {
 

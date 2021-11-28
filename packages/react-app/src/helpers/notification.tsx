@@ -13,5 +13,12 @@ export const openNotificationWithIcon = (type: string, message: string, descript
                 message: message,
                 description: description,
             });
+            break;
+        case "error":
+            notification['error']({
+                message: message,
+                description: description,
+            });
+            break;
     }
 };

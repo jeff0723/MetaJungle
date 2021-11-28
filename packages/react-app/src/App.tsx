@@ -11,6 +11,8 @@ import Account from "./components/Account";
 import "./style.css";
 import Proposal from './components/Proposal'
 import Vote from './components/Vote'
+import Bushes from './components/Bushes'
+
 const { Header } = Layout;
 const { Title } = Typography;
 const styles = {
@@ -46,16 +48,19 @@ function App() {
               <NavLink to="/collections">🖼  Collections</NavLink>
             </Menu.Item>
             <Menu.Item key="gank">
-              <NavLink to="/gank">👛 Gank</NavLink>
+              <NavLink to="/gank">💣 Gank</NavLink>
             </Menu.Item>
             <Menu.Item key="hide-on-bush">
-              <NavLink to="/hide-on-bush">👛 Hide-On-Bush</NavLink>
+              <NavLink to="/hide-on-bush">🏕 Hide-On-Bush</NavLink>
             </Menu.Item>
             <Menu.Item key="propose">
-              <NavLink to="/proposal">👛 Proposal</NavLink>
+              <NavLink to="/proposal">✏️ Proposal</NavLink>
             </Menu.Item>
             <Menu.Item key="vote">
-              <NavLink to="/vote">👛 Vote</NavLink>
+              <NavLink to="/vote">🏹 Vote</NavLink>
+            </Menu.Item>
+            <Menu.Item key="ranking">
+              <NavLink to="/ranking">📊 Ranking</NavLink>
             </Menu.Item>
           </Menu>
           <div>
@@ -69,7 +74,9 @@ function App() {
             <Route path='/gank' element={<Gank />} />
             <Route path='/proposal' element={<Proposal />} />
             <Route path='/vote' element={<Vote />} />
+            <Route path='/hide-on-bush' element={<Bushes />} />
 
+            {/* <Route path='/ranking' element={<Rank/>}/> */}
           </Routes>
         </div>
       </Router>
