@@ -132,7 +132,7 @@ abstract contract JungleBush is Jungler {
     }
 
     /**
-     * @notice Return jungler ID given bush ID
+     * @notice Return jungler data given bush ID
      */
     function getJunglerOnBush(uint8 bushId)
         public

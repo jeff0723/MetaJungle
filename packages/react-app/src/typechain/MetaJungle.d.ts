@@ -35,6 +35,7 @@ interface MetaJungleInterface extends ethers.utils.Interface {
     "getJunglerData(uint256)": FunctionFragment;
     "getJunglerOnBush(uint8)": FunctionFragment;
     "getJunglerProfile(uint256)": FunctionFragment;
+    "getJunglerProfileOnBush(uint8)": FunctionFragment;
     "getOwnerJunglerList(address)": FunctionFragment;
     "getVotableBushesByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -101,6 +102,10 @@ interface MetaJungleInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getJunglerProfile",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getJunglerProfileOnBush",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -210,6 +215,10 @@ interface MetaJungleInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getJunglerProfile",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getJunglerProfileOnBush",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -509,6 +518,35 @@ export class MetaJungle extends BaseContract {
       ]
     >;
 
+    getJunglerProfileOnBush(
+      bushId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [
+          BigNumber,
+          number,
+          boolean,
+          boolean,
+          number,
+          string,
+          BigNumber,
+          number,
+          string
+        ] & {
+          id: BigNumber;
+          generation: number;
+          isOpen: boolean;
+          isCampping: boolean;
+          power: number;
+          proxy: string;
+          openPrice: BigNumber;
+          leverage: number;
+          tokenURI: string;
+        }
+      ]
+    >;
+
     getOwnerJunglerList(
       owner: string,
       overrides?: CallOverrides
@@ -781,6 +819,33 @@ export class MetaJungle extends BaseContract {
     }
   >;
 
+  getJunglerProfileOnBush(
+    bushId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      BigNumber,
+      number,
+      boolean,
+      boolean,
+      number,
+      string,
+      BigNumber,
+      number,
+      string
+    ] & {
+      id: BigNumber;
+      generation: number;
+      isOpen: boolean;
+      isCampping: boolean;
+      power: number;
+      proxy: string;
+      openPrice: BigNumber;
+      leverage: number;
+      tokenURI: string;
+    }
+  >;
+
   getOwnerJunglerList(
     owner: string,
     overrides?: CallOverrides
@@ -990,6 +1055,33 @@ export class MetaJungle extends BaseContract {
 
     getJunglerProfile(
       junglerId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        BigNumber,
+        number,
+        boolean,
+        boolean,
+        number,
+        string,
+        BigNumber,
+        number,
+        string
+      ] & {
+        id: BigNumber;
+        generation: number;
+        isOpen: boolean;
+        isCampping: boolean;
+        power: number;
+        proxy: string;
+        openPrice: BigNumber;
+        leverage: number;
+        tokenURI: string;
+      }
+    >;
+
+    getJunglerProfileOnBush(
+      bushId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -1358,6 +1450,11 @@ export class MetaJungle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getJunglerProfileOnBush(
+      bushId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getOwnerJunglerList(
       owner: string,
       overrides?: CallOverrides
@@ -1534,6 +1631,11 @@ export class MetaJungle extends BaseContract {
 
     getJunglerProfile(
       junglerId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getJunglerProfileOnBush(
+      bushId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

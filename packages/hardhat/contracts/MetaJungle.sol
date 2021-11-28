@@ -69,6 +69,7 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
         view
         returns (JunglerProfile memory)
     {
+        require(_exists(junglerId), "query for nonexistant jungler");
         JunglerData memory target = _junglerData[junglerId];
         return
             JunglerProfile(
@@ -99,5 +100,17 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
             tokenId = tokenOfOwnerByIndex(owner, idx);
             junglerList[idx] = getJunglerProfile(tokenId);
         }
+    }
+
+    /**
+     * @notice Return jungler profile given bush ID
+     */
+    function getJunglerProfileOnBush(uint8 bushId)
+        public
+        view
+        returns (JunglerProfile memory)
+    {
+        require(bushId < ENV_CAPACITY, "invalid bush ID");
+        return getJunglerProfile(_hideOnBush[bushId]);
     }
 }
