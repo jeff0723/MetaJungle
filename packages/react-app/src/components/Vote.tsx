@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { Card, List, Typography, Avatar, Button, Modal, Form, Input } from "antd";
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { META_JUNGLE_ADDRESS } from '../constants/address';
-import { MetaJungle__factory } from "../typechain";
-import { useMoralis } from "react-moralis";
-import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
-import { utils } from 'ethers'
-import { openNotificationWithIcon } from '../helpers/notification'
-import { resolveIPFSLink, getEllipsisTxt } from '../helpers/formatters'
 import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Input, List, Modal, Typography } from "antd";
+import { utils } from 'ethers';
+import React, { useEffect, useState } from 'react';
+import { useMoralis } from "react-moralis";
+import { META_JUNGLE_ADDRESS } from '../constants/address';
+import { getEllipsisTxt, resolveIPFSLink } from '../helpers/formatters';
+import { openNotificationWithIcon } from '../helpers/notification';
+import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
+import { MetaJungle__factory } from "../typechain";
 const { Title, Text } = Typography
 
 interface Props {
@@ -75,7 +74,8 @@ const Vote = (props: Props) => {
 
         getAllProposals();
         getVotableList();
-    }, [walletAddress])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [walletAddress, chainId])
 
     const handleVote = (number: string) => {
         if (!number || isNaN(parseInt(number))) {

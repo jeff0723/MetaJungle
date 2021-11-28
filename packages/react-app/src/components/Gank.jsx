@@ -55,9 +55,6 @@ const styles = {
 }
 
 
-
-let source = [];
-
 function Gank() {
     const { Moralis } = useMoralis();
     const { native } = useMoralisWeb3Api();

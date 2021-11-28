@@ -64,18 +64,6 @@ const openNotificationWithIcon = (type, message, description) => {
     });
 };
 
-// struct JunglerProfile {
-//     uint256 id;
-//     uint32 generation;
-//     bool isOpen;
-//     bool isCampping;
-//     int40 power;
-//     address proxy;
-//     int256 openPrice;
-//     int8 leverage;
-//     string tokenURI;
-// }
-
 const mapProfileArrayToObject = (profileArray) => {
     return {
         id: parseInt(profileArray[0]),
@@ -90,7 +78,7 @@ const mapProfileArrayToObject = (profileArray) => {
     }
 }
 const Collections = () => {
-    const { isWeb3Enabled, web3, enableWeb3, isAuthenticated } = useMoralis();
+    const { isWeb3Enabled, web3, enableWeb3 } = useMoralis();
     const { native, token } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
     const [metaJungleAddress, setMetaJungleAddress] = useState("");

@@ -1,16 +1,16 @@
-import { Button, Input, Modal, notification, Select, Typography } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
+import { Button, Input, Modal, Select, Typography } from "antd";
 import { utils } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { useMoralis } from "react-moralis";
 import styled from 'styled-components';
 import { META_JUNGLE_ADDRESS } from '../constants/address';
 import { pricePairs } from '../constants/pricePairs';
+import { proxyToPairs } from '../constants/proxyToPairs';
 import { resolveIPFSLink } from '../helpers/formatters';
+import { openNotificationWithIcon } from '../helpers/notification';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 import { MetaJungle__factory } from "../typechain";
-import { proxyToPairs } from '../constants/proxyToPairs'
-import { LoadingOutlined } from '@ant-design/icons';
-import { openNotificationWithIcon } from '../helpers/notification'
 const { Text } = Typography
 const { Option } = Select;
 

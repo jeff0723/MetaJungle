@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
+import { useMoralisWeb3Api } from "react-moralis";
 import { META_JUNGLE_ADDRESS } from '../constants/address';
 import CURRENT_JUNGLER_STATE_ABI from '../events/CurrentJunglerState.json';
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
@@ -27,7 +27,6 @@ const getOpen = (responseArray) => {
 }
 
 const Ranking = (props) => {
-    const { Moralis, } = useMoralis();
     const { native } = useMoralisWeb3Api();
     const { walletAddress, chainId } = useMoralisDapp();
 
@@ -40,19 +39,14 @@ const Ranking = (props) => {
                 abi: CURRENT_JUNGLER_STATE_ABI
             }
             const response = (await native.getContractEvents(options));
-            console.log("response: ", response.result);
-            const openMap = getOpen(response.result);
-            console.log("openMap: ", openMap);
+            // console.log("response: ", response.result);
+            getOpen(response.result);
+            // console.log("openMap: ", openMap);
 
-        }
-        const QueryEvent = async () => {
-            const Status = Moralis.Object.extend("status");
-            const query = new Moralis.Query(Status);
         }
         if (chainId && walletAddress) {
             getEvent();
         }
-        QueryEvent();
 
     })
     return (
