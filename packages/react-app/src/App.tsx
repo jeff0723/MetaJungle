@@ -7,6 +7,7 @@ import {
 import QuickStart from './components/QuickStart'
 import Collections from './components/Collections'
 import Gank from './components/Gank'
+import Ranking from './components/Ranking'
 import Account from "./components/Account";
 import "./style.css";
 import Proposal from './components/Proposal'
@@ -51,6 +52,9 @@ function App() {
             <Menu.Item key="hide-on-bush">
               <NavLink to="/hide-on-bush">👛 Hide-On-Bush</NavLink>
             </Menu.Item>
+            <Menu.Item key="ranking">
+              <NavLink to="/ranking">👛 Ranking</NavLink>
+            </Menu.Item>
             <Menu.Item key="propose">
               <NavLink to="/proposal">👛 Proposal</NavLink>
             </Menu.Item>
@@ -69,7 +73,7 @@ function App() {
             <Route path='/gank' element={<Gank />} />
             <Route path='/proposal' element={<Proposal />} />
             <Route path='/vote' element={<Vote />} />
-
+            <Route path='/ranking' element={<Ranking />} />
           </Routes>
         </div>
       </Router>
