@@ -3,8 +3,8 @@
 ## Usage
 clone repo
 ```
-git clone https://github.com/jeff0723/bulls-and-bears.git
-cd bulls-and-bears
+https://github.com/jeff0723/MetaJungle.git
+cd MetaJungle
 ```
 
 test contracts
@@ -12,13 +12,7 @@ test contracts
 yarn
 yarn compile
 yarn deploy
-yarn test
-```
-
-create file named `.env` under `./package/react-app` like this
-```
-REACT_APP_MORALIS_APPLICATION_ID=<MORALIS APP ID>
-REACT_APP_MORALIS_SERVER_URL=<SERVER URL>
+REPORT_GAS=1 yarn test
 ```
 
 run frontend
