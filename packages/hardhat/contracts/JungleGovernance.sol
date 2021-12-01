@@ -20,16 +20,17 @@ abstract contract JungleGovernance is JungleBush {
     /// @dev Latest update time
     uint256 private _latestUpdateTime;
 
-    /// @dev Proposal contents
+    /// @dev Vault value locked
+    uint256 private _vaultValue;
+
+    /// @dev List of proposals
+    Proposal[] private _proposals;
     struct Proposal {
         address proposer;
         string baseURI;
         uint88 bid;
         uint8 voteCount;
     }
-
-    /// @dev List of proposals
-    Proposal[] private _proposals;
 
     /// @dev Map from generation to baseURI
     mapping(uint32 => string) internal _baseURIofGeneration;
@@ -78,13 +79,14 @@ abstract contract JungleGovernance is JungleBush {
     {
         uint8 bushCount = uint8(bushIdList.length);
         Proposal storage target = _proposals[proposalId];
+        BushData memory bush;
 
         // verify every bush
         for (uint8 bushId = 0; bushId < bushCount; bushId++) {
-            uint256 junglerId = _hideOnBush[bushId];
-            require(ownerOf(junglerId) == _msgSender(), "not owner");
-            require(_bushGeneration[bushId] < generation, "already voted");
-            _bushGeneration[bushId] = generation;
+            bush = _bushData[bushId];
+            require(ownerOf(bush.junglerId) == _msgSender(), "not owner");
+            require(bush.generation < generation, "already voted");
+            bush.generation = generation;
         }
 
         // update vote count
@@ -93,14 +95,14 @@ abstract contract JungleGovernance is JungleBush {
         // reward voter
         _jgrContract.transfer(
             _msgSender(),
-            ((balanceOf(address(this)) * bushCount) * 8) / 10 / ENV_CAPACITY
+            (_vaultValue * bushCount * 8) / 10 / ENV_CAPACITY
         );
     }
 
     /**
      * @notice See {JungleInterface-startVote}
      */
-    function startVote() external override proposingStage {
+    function startVote() external override survivingStage {
         require(
             block.timestamp >= _latestUpdateTime + PROPOSAL_INTERVAL,
             "not yet to start vote"
@@ -108,6 +110,7 @@ abstract contract JungleGovernance is JungleBush {
         require(_proposals.length > 0, "no proposal to vote");
         stage = Stage.VOTING;
         _latestUpdateTime = block.timestamp;
+        _vaultValue = _jgrContract.balanceOf(address(this));
     }
 
     /**
@@ -118,7 +121,7 @@ abstract contract JungleGovernance is JungleBush {
             block.timestamp >= _latestUpdateTime + VOTE_INTERVAL,
             "not yet to end vote"
         );
-        stage = Stage.PROPOSING;
+        stage = Stage.SURVIVING;
         _latestUpdateTime = block.timestamp;
 
         // determine winning proposal
@@ -138,7 +141,7 @@ abstract contract JungleGovernance is JungleBush {
             (balanceOf(address(this))) / 10
         );
 
-        // clear slot
+        // clear slots
         delete _proposals;
 
         // evolve to next generation

@@ -5,7 +5,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MetaJungleInterface.sol";
-import "./JungleResource.sol";
+import "./token/JungleResource.sol";
 
 /// @notice ENS registry to get chainlink resolver
 interface ENS {
@@ -30,16 +30,16 @@ abstract contract Jungler is MetaJungleInterface, ERC721Enumerable {
     /// @dev ENS interface
     ENS private _ens;
 
-    /// @dev JungleResource contract
+    /// @dev JungleResource token contract
     IERC20 internal _jgrContract;
 
     /// @dev Map from jungler ID to on-chain data
     mapping(uint256 => JunglerData) internal _junglerData;
     struct JunglerData {
         // state
-        uint32 generation; // the generation in which the jungler bred
+        uint32 generation; // the generation in which the jungler summon
         bool isOpen; // if position is open
-        bool isCampping; // if jungler is campping
+        bool isCamping; // if jungler is camping
         int40 power; // net worth of the jungler
         // position
         address proxy; // proxy of Chainlink price feed

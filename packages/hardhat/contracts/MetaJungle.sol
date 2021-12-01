@@ -53,7 +53,7 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
         uint256 id;
         uint32 generation;
         bool isOpen;
-        bool isCampping;
+        bool isCamping;
         int40 power;
         address proxy;
         int256 openPrice;
@@ -76,7 +76,7 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
                 junglerId,
                 target.generation,
                 target.isOpen,
-                target.isCampping,
+                target.isCamping,
                 target.power,
                 target.proxy,
                 target.openPrice,
@@ -111,6 +111,6 @@ contract MetaJungle is JungleGovernance, PaymentSplitter {
         returns (JunglerProfile memory)
     {
         require(bushId < ENV_CAPACITY, "invalid bush ID");
-        return getJunglerProfile(_hideOnBush[bushId]);
+        return getJunglerProfile(_bushData[bushId].junglerId);
     }
 }

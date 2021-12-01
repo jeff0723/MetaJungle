@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./Jungler.sol";
+import "./token/HideOnBush.sol";
 
 /**
  * @title Bushes that allow junglers to camp
@@ -11,24 +12,23 @@ abstract contract JungleBush is Jungler {
     /// @dev Max number of bushes
     uint8 internal constant ENV_CAPACITY = 100;
 
-    /// @dev Reward per second
-    uint256 private constant REWARD_PER_SEC = 4e11;
+    /// @dev HideOnBush token contract
+    IERC20Beta private _hobContract;
 
-    /// @dev Map from bush ID to jungler ID (Faker the GOAT!!!)
-    mapping(uint8 => uint256) internal _hideOnBush;
-
-    /// @dev Map from bush ID to update time
-    mapping(uint8 => uint256) private _bushTimer;
-
-    /// @dev Map from bush ID to generation
-    mapping(uint8 => uint32) internal _bushGeneration;
+    /// @dev Bush data structure
+    mapping(uint8 => BushData) internal _bushData;
+    struct BushData {
+        uint256 junglerId;
+        uint224 timer;
+        uint32 generation;
+    }
 
     /**
      * @notice Stage of proposing or voting
      */
     Stage public stage;
     enum Stage {
-        PROPOSING,
+        SURVIVING,
         VOTING
     }
 
@@ -38,15 +38,16 @@ abstract contract JungleBush is Jungler {
         _;
     }
 
-    /// @dev Proposing stage (bush not locked)
-    modifier proposingStage() {
-        require(stage == Stage.PROPOSING, "not in proposing stage");
+    /// @dev Surviving stage (bush not locked)
+    modifier survivingStage() {
+        require(stage == Stage.SURVIVING, "not in surviving stage");
         _;
     }
 
     /// @dev Initialize stage
     constructor() {
-        stage = Stage.PROPOSING;
+        stage = Stage.SURVIVING;
+        _hobContract = IERC20Beta(new HideOnBush());
     }
 
     /**
@@ -56,16 +57,17 @@ abstract contract JungleBush is Jungler {
         external
         override
         checkOwner(junglerId)
-        proposingStage
+        survivingStage
     {
         require(bushId < ENV_CAPACITY, "invalid bush ID");
 
         // get attacker data
         JunglerData storage attackerData = _junglerData[junglerId];
-        require(!attackerData.isCampping, "already on bush");
+        require(!attackerData.isCamping, "already on bush");
 
         // get defender data
-        uint256 defenderId = _hideOnBush[bushId];
+        BushData storage targetBush = _bushData[bushId];
+        uint256 defenderId = targetBush.junglerId;
         JunglerData storage defenderData = _junglerData[defenderId];
 
         // attacker should be of this generation
@@ -81,22 +83,14 @@ abstract contract JungleBush is Jungler {
         }
 
         // update on-chain data
-        defenderData.isCampping = false;
-        attackerData.isCampping = true;
-        _hideOnBush[bushId] = junglerId;
+        defenderData.isCamping = false;
+        attackerData.isCamping = true;
+        targetBush.junglerId = junglerId;
 
         if (defenderId != 0) {
-            uint256 reward = (block.timestamp - _bushTimer[bushId]) *
-                REWARD_PER_SEC;
-            uint256 selfFund = balanceOf(address(this));
-            if (reward > selfFund) {
-                reward = selfFund;
-            }
-            _jgrContract.transferFrom(
-                address(this),
-                ownerOf(defenderId),
-                reward
-            );
+            uint256 hobReward = (block.timestamp - targetBush.timer);
+            _hobContract.mint(ownerOf(defenderId), hobReward);
+            targetBush.timer = uint224(block.timestamp);
         }
     }
 
@@ -109,13 +103,14 @@ abstract contract JungleBush is Jungler {
         returns (uint8[] memory bushIdList)
     {
         uint8 votableBushCount = 0;
-        uint256 junglerId;
+        BushData memory targetBush;
+
         for (uint8 bushId = 0; bushId < ENV_CAPACITY; bushId++) {
-            junglerId = _hideOnBush[bushId];
+            targetBush = _bushData[bushId];
             if (
-                _exists(junglerId) &&
-                ownerOf(junglerId) == owner &&
-                _bushGeneration[bushId] != generation
+                _exists(targetBush.junglerId) &&
+                ownerOf(targetBush.junglerId) == owner &&
+                targetBush.generation != generation
             ) {
                 votableBushCount++;
             }
@@ -123,27 +118,15 @@ abstract contract JungleBush is Jungler {
         bushIdList = new uint8[](votableBushCount);
         uint8 idx = 0;
         for (uint8 bushId = 0; bushId < ENV_CAPACITY; bushId++) {
-            junglerId = _hideOnBush[bushId];
+            targetBush = _bushData[bushId];
             if (
-                _exists(junglerId) &&
-                ownerOf(junglerId) == owner &&
-                _bushGeneration[bushId] != generation
+                _exists(targetBush.junglerId) &&
+                ownerOf(targetBush.junglerId) == owner &&
+                targetBush.generation != generation
             ) {
                 bushIdList[idx] = bushId;
                 idx++;
             }
         }
-    }
-
-    /**
-     * @notice Return jungler data given bush ID
-     */
-    function getJunglerOnBush(uint8 bushId)
-        public
-        view
-        returns (JunglerData memory)
-    {
-        require(bushId < ENV_CAPACITY, "invalid bush ID");
-        return getJunglerData(_hideOnBush[bushId]);
     }
 }
